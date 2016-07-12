@@ -92,9 +92,17 @@ textarea {
 .title-container .buttons {
   display: inline-block;
   float: right;
-  font-size: 20px; }
-  .title-container .buttons .change-project {
-    color: #555; }
+  font-size: 22px; }
+  .title-container .buttons a {
+    color: #555;
+    margin-left: 10px; }
+    .title-container .buttons a:hover {
+      opacity: .8; }
+  .title-container .buttons .select-project {
+    width: 200px;
+    display: none;
+    font-size: 14px;
+    padding: 3px 7px; }
 
 .timer-container {
   border-bottom: dashed 1px #aaa;
@@ -103,6 +111,8 @@ textarea {
     color: #999;
     font-size: 50px;
     margin-right: 10px; }
+    .timer-container .btn:hover {
+      opacity: .8; }
   .timer-container .label {
     text-decoration: none;
     font-size: 50px;

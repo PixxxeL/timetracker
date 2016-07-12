@@ -4,9 +4,13 @@ block content
     #content-wrapper
         .title-container
             .buttons
-                //-select.select-project
-                a.change-project(href="#" title="Сменить проект")
-                    i.fa.fa-gear
+                select.select-project
+                a.swap-project(href="#" title="Сменить проект")
+                    i.fa.fa-list
+                a.add-project(href="#" title="Добавить проект")
+                    i.fa.fa-plus
+                a.remove-project(href="#" title="Удалить проект")
+                    i.fa.fa-minus
             h1
                 | Time Tracker
                 span.project-name
@@ -24,6 +28,7 @@ block content
                     tr
                         th Начало
                         th Завершение
+                        th Пояснение
                         th Всего
                         th
                 tbody
