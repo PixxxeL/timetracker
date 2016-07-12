@@ -1,0 +1,213 @@
+@import "./_definitions"
+
+html, body
+    color: #333
+    font:
+        size: 14px
+    line-height: 18px
+    width: 100%
+    margin: 0
+    padding: 0
+    background: #efefef
+
+h1,
+h2,
+h3
+    margin-top: 0
+    font-weight: normal
+
+a
+    color: #000
+    &.invert
+        text-decoration: none
+        &:hover
+            text-decoration: underline
+
+a:hover
+    text-decoration: none
+
+::-moz-selection
+    background: #aaa
+    text-shadow: none
+
+::selection
+    background: #aaa
+    text-shadow: none
+
+hr
+    display: block
+    height: 1px
+    border: 0
+    border-top: 1px solid #ccc
+    margin: 20px 0
+    padding: 0
+
+audio, canvas, iframe, img, svg, video
+    vertical-align: middle
+
+fieldset
+    border: 0
+    margin: 0
+    padding: 0
+
+textarea
+    resize: vertical
+
+.browserupgrade
+    background: #d00
+    color: #fdd
+    font-size: 17px
+    line-height: 24px
+    text-align: center
+    margin: 0
+    padding: 20px
+    a
+        color: #fff
+
+.pseudo
+    border: 0
+    border-bottom: dotted 1px #000
+    &:hover
+        border-bottom: 0
+
+.pull-left
+    float: left !important
+
+.pull-right
+    float: right !important
+
+.clear
+    clear: both
+
+.media
+    background: $mediaBack
+    overflow: hidden
+    border: solid 1px transparent
+
+// =============================================================================
+#app-container
+    text-align: center
+
+#content-wrapper
+    margin: 20px auto
+    width: $desktopWidth
+    text-align: left
+
+.title-container
+    .buttons
+        display: inline-block
+        float: right
+        font-size: 20px
+        .change-project
+            color: #555
+
+.timer-container
+    border-bottom: dashed 1px #aaa
+    padding-bottom: 20px
+    .btn
+        color: #999
+        font-size: 50px
+        margin-right: 10px
+    .label
+        text-decoration: none
+        font-size: 50px
+        line-height: 100%
+        outline: none
+        &.active
+            color: #900
+    .total-time
+        display: inline-block
+        font-size: 16px
+        margin-left: 40px
+        .value
+            font-weight: bold
+            margin-left: 5px
+
+.times
+    margin-top: 20px
+    .empty
+        display: none
+        border: solid 1px #cbcbcb
+        background: #e7e7e7
+        color: #740808
+        padding: 10px 20px
+    .results
+        display: none
+        width: 100%
+        th, td
+            padding: 3px 0
+        .clear-btn
+            color: #a00
+
+// =============================================================================
+
+.hidden
+    display: none !important
+
+.visuallyhidden
+    border: 0
+    clip: rect(0 0 0 0)
+    height: 1px
+    margin: -1px
+    overflow: hidden
+    padding: 0
+    position: absolute
+    width: 1px
+    &.focusable
+        &:active, &:focus
+            clip: auto
+            height: auto
+            margin: 0
+            overflow: visible
+            position: static
+            width: auto
+
+.invisible
+    visibility: hidden
+
+.clearfix
+    &:before
+        content: " "
+        display: table
+    &:after
+        content: " "
+        display: table
+        clear: both
+
+@media print
+    *
+        background: transparent !important
+        color: #000 !important
+        box-shadow: none !important
+        text-shadow: none !important
+        &:before, &:after
+            background: transparent !important
+            color: #000 !important
+            box-shadow: none !important
+            text-shadow: none !important
+    a
+        text-decoration: underline
+        &:visited
+            text-decoration: underline
+        &[href]:after
+            content: " (" attr(href) ")"
+    abbr[title]:after
+        content: " (" attr(title) ")"
+    a
+        &[href^="#"]:after, &[href^="javascript:"]:after
+            content: ""
+    pre, blockquote
+        border: 1px solid #999
+        page-break-inside: avoid
+    thead
+        display: table-header-group
+    tr
+        page-break-inside: avoid
+    img
+        page-break-inside: avoid
+        max-width: 100% !important
+    p, h2, h3
+        orphans: 3
+        widows: 3
+    h2, h3
+        page-break-after: avoid

@@ -1,0 +1,29 @@
+extends base.jade
+
+block content
+    #content-wrapper
+        .title-container
+            .buttons
+                //-select.select-project
+                a.change-project(href="#" title="Сменить проект")
+                    i.fa.fa-gear
+            h1
+                | Time Tracker
+                span.project-name
+        .timer-container
+            a.btn(href="#" title="Таймер")
+                i.fa.fa-play
+            a.label(href="#" title="Таймер") 0:00:00
+            .total-time
+                | Всего времени в проекте:
+                span.value 0:00:00
+        .times
+            .empty Пока нет учтенного времени
+            table.results
+                thead
+                    tr
+                        th Начало
+                        th Завершение
+                        th Всего
+                        th
+                tbody

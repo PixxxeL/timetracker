@@ -1,0 +1,204 @@
+html, body {
+  color: #333;
+  font-size: 14px;
+  line-height: 18px;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+  background: #efefef; }
+
+h1,
+h2,
+h3 {
+  margin-top: 0;
+  font-weight: normal; }
+
+a {
+  color: #000; }
+  a.invert {
+    text-decoration: none; }
+    a.invert:hover {
+      text-decoration: underline; }
+
+a:hover {
+  text-decoration: none; }
+
+::-moz-selection {
+  background: #aaa;
+  text-shadow: none; }
+
+::selection {
+  background: #aaa;
+  text-shadow: none; }
+
+hr {
+  display: block;
+  height: 1px;
+  border: 0;
+  border-top: 1px solid #ccc;
+  margin: 20px 0;
+  padding: 0; }
+
+audio, canvas, iframe, img, svg, video {
+  vertical-align: middle; }
+
+fieldset {
+  border: 0;
+  margin: 0;
+  padding: 0; }
+
+textarea {
+  resize: vertical; }
+
+.browserupgrade {
+  background: #d00;
+  color: #fdd;
+  font-size: 17px;
+  line-height: 24px;
+  text-align: center;
+  margin: 0;
+  padding: 20px; }
+  .browserupgrade a {
+    color: #fff; }
+
+.pseudo {
+  border: 0;
+  border-bottom: dotted 1px #000; }
+  .pseudo:hover {
+    border-bottom: 0; }
+
+.pull-left {
+  float: left !important; }
+
+.pull-right {
+  float: right !important; }
+
+.clear {
+  clear: both; }
+
+.media {
+  background: #efefef;
+  overflow: hidden;
+  border: solid 1px transparent; }
+
+#app-container {
+  text-align: center; }
+
+#content-wrapper {
+  margin: 20px auto;
+  width: 945px;
+  text-align: left; }
+
+.title-container .buttons {
+  display: inline-block;
+  float: right;
+  font-size: 20px; }
+  .title-container .buttons .change-project {
+    color: #555; }
+
+.timer-container {
+  border-bottom: dashed 1px #aaa;
+  padding-bottom: 20px; }
+  .timer-container .btn {
+    color: #999;
+    font-size: 50px;
+    margin-right: 10px; }
+  .timer-container .label {
+    text-decoration: none;
+    font-size: 50px;
+    line-height: 100%;
+    outline: none; }
+    .timer-container .label.active {
+      color: #900; }
+  .timer-container .total-time {
+    display: inline-block;
+    font-size: 16px;
+    margin-left: 40px; }
+    .timer-container .total-time .value {
+      font-weight: bold;
+      margin-left: 5px; }
+
+.times {
+  margin-top: 20px; }
+  .times .empty {
+    display: none;
+    border: solid 1px #cbcbcb;
+    background: #e7e7e7;
+    color: #740808;
+    padding: 10px 20px; }
+  .times .results {
+    display: none;
+    width: 100%; }
+    .times .results th, .times .results td {
+      padding: 3px 0; }
+    .times .results .clear-btn {
+      color: #a00; }
+
+.hidden {
+  display: none !important; }
+
+.visuallyhidden {
+  border: 0;
+  clip: rect(0 0 0 0);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px; }
+  .visuallyhidden.focusable:active, .visuallyhidden.focusable:focus {
+    clip: auto;
+    height: auto;
+    margin: 0;
+    overflow: visible;
+    position: static;
+    width: auto; }
+
+.invisible {
+  visibility: hidden; }
+
+.clearfix:before {
+  content: " ";
+  display: table; }
+
+.clearfix:after {
+  content: " ";
+  display: table;
+  clear: both; }
+
+@media print {
+  * {
+    background: transparent !important;
+    color: #000 !important;
+    box-shadow: none !important;
+    text-shadow: none !important; }
+    *:before, *:after {
+      background: transparent !important;
+      color: #000 !important;
+      box-shadow: none !important;
+      text-shadow: none !important; }
+  a {
+    text-decoration: underline; }
+    a:visited {
+      text-decoration: underline; }
+    a[href]:after {
+      content: " (" attr(href) ")"; }
+  abbr[title]:after {
+    content: " (" attr(title) ")"; }
+  a[href^="#"]:after, a[href^="javascript:"]:after {
+    content: ""; }
+  pre, blockquote {
+    border: 1px solid #999;
+    page-break-inside: avoid; }
+  thead {
+    display: table-header-group; }
+  tr {
+    page-break-inside: avoid; }
+  img {
+    page-break-inside: avoid;
+    max-width: 100% !important; }
+  p, h2, h3 {
+    orphans: 3;
+    widows: 3; }
+  h2, h3 {
+    page-break-after: avoid; } }

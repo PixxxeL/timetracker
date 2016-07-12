@@ -1,0 +1,22 @@
+{
+  "name": "repo",
+  "description": "",
+  "main": "index.js",
+  "license": "ISC",
+  "homepage": "",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery": "^2.2.4",
+    "knockout": "^3.4.0",
+    "bootstrap": "^3.3.6",
+    "font-awesome": "^4.6.3",
+    "html5-boilerplate": "^5.3.0"
+  }
+}

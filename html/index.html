@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>Time Tracker</title>
+    <link rel="stylesheet" href="/bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/css/main.css">
+  </head>
+  <body><!--[if lt IE 9]>
+    <p class="browserupgrade">Вы используете <strong>очень старый</strong> браузер.
+      Пожалуйста, <a href="http://browsehappy.com/">обновите Ваш браузер</a>
+      для улучшенного отображения сайта.
+    </p><![endif]-->
+    <div id="app-container">
+      <div id="content-wrapper">
+        <div class="title-container">
+          <div class="buttons"><a href="#" title="Сменить проект" class="change-project"><i class="fa fa-gear"></i></a>
+          </div>
+          <h1>Time Tracker<span class="project-name"></span></h1>
+        </div>
+        <div class="timer-container"><a href="#" title="Таймер" class="btn"><i class="fa fa-play"></i></a><a href="#" title="Таймер" class="label">0:00:00</a>
+          <div class="total-time">Всего времени в проекте:<span class="value">0:00:00</span></div>
+        </div>
+        <div class="times">
+          <div class="empty">Пока нет учтенного времени</div>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Начало</th>
+                <th>Завершение</th>
+                <th>Всего</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <script src="/bower_components/jquery/dist/jquery.min.js"></script>
+    <script src="/js/main.js"></script>
+  </body>
+</html>
