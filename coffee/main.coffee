@@ -191,7 +191,7 @@ TIMETRACKER.App = ->
         title = $.trim title
         if not title
             return alert 'Вы не ввели название проекта'
-        if $.inArray title, titles != -1
+        if $.inArray(title, titles) != -1
             return alert 'Такой проект уже существует'
         TIMETRACKER.Data.current = title
         TIMETRACKER.Data.data[title] = []
