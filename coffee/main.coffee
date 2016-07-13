@@ -3,8 +3,6 @@
 TODO:
     1. Переименование проекта
     2. При удалении переключать не на дефолтный а на существующий
-    3. Регулярное сохранение таймера
-    4. Блок интерфейса при таймере или его останов
 """
 
 
@@ -22,7 +20,7 @@ TIMETRACKER.App = ->
     startDate = null
     curDesc = ''
     titles = []
-    #loopCounter = 0
+    loopCounter = 0
 
     load = ->
         data = localStorage.getItem TIMETRACKER.Settings.dataStorageKey
@@ -49,10 +47,12 @@ TIMETRACKER.App = ->
         "#{hours}:#{minutes}:#{seconds}"
 
     renderFrame = ->
-        #loopCounter += 1
+        loopCounter += 1
         if startDate
             diff = new Date().getTime() - startDate.getTime()
             timerEl.text formatMilliseconds(diff)
+            if loopCounter % 100 is 0 # per 5 seconds
+                saveTimer()
             requestAnimationFrame renderFrame
         null
 
@@ -91,25 +91,38 @@ TIMETRACKER.App = ->
         else
             $('.swap-project').show()
 
+    saveTimer = (insert=false) ->
+        times = TIMETRACKER.Data.data[TIMETRACKER.Data.current]
+        startTs = startDate.getTime()
+        timeItem = {
+            startTs : startTs
+            endTs : new Date().getTime()
+            desc : curDesc
+        }
+        if insert
+            times.unshift timeItem
+        else
+            $.each times, (idx, item) ->
+                if item.startTs == startTs
+                    times[idx] = timeItem
+                null
+        save()
+        renderResults()
+
     toggleTimer = (e) ->
         e.preventDefault()
+        $('#content-wrapper').toggleClass 'lock'
         if startDate
             toggleEl.find('i.fa').removeClass('fa-pause').addClass('fa-play')
-            endDate = new Date
-            TIMETRACKER.Data.data[TIMETRACKER.Data.current].unshift {
-                startTs : startDate.getTime()
-                endTs : endDate.getTime()
-                desc : curDesc
-            }
-            save()
+            saveTimer()
             startDate = null
-            renderResults()
         else
             toggleEl.find('i.fa').removeClass('fa-play').addClass('fa-pause')
-            #loopCounter = 0
+            loopCounter = 0
             startDate = new Date
             curDesc = prompt 'Можете ввести пояснение:'
             curDesc = $.trim curDesc
+            saveTimer true
             requestAnimationFrame renderFrame
         null
 
@@ -136,6 +149,8 @@ TIMETRACKER.App = ->
 
     $('.times .results').on 'click', '.clear-btn', (e) ->
         e.preventDefault()
+        if startDate
+            return alert 'Нельзя удалить пока работает таймер'
         tr = $(@).parents('tr')
         start = parseFloat tr.data('start')
         end = parseFloat tr.data('end')
@@ -153,6 +168,8 @@ TIMETRACKER.App = ->
     $('.swap-project').on 'click', (e) ->
         e.preventDefault()
         e.stopPropagation()
+        if startDate
+            return alert 'Нельзя переключить пока работает таймер'
         toggleProjectSelectList()
         null
 
@@ -168,12 +185,14 @@ TIMETRACKER.App = ->
 
     $('.add-project').on 'click', (e) ->
         e.preventDefault()
+        if startDate
+            return alert 'Нельзя добавить проект пока работает таймер'
         title = prompt 'Введите название нового проекта:'
         title = $.trim title
         if not title
-            return alert('Вы не ввели название проекта')
+            return alert 'Вы не ввели название проекта'
         if $.inArray title, titles != -1
-            return alert('Такой проект уже существует')
+            return alert 'Такой проект уже существует'
         TIMETRACKER.Data.current = title
         TIMETRACKER.Data.data[title] = []
         save()
@@ -183,6 +202,8 @@ TIMETRACKER.App = ->
 
     $('.remove-project').on 'click', (e) ->
         e.preventDefault()
+        if startDate
+            return alert 'Нельзя удалить проект пока работает таймер'
         if confirm 'Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?'
             if TIMETRACKER.Data.current == 'Default'
                 return alert 'Нельзя удалить проект `Default`'

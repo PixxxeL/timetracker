@@ -88,6 +88,10 @@ textarea {
   margin: 20px auto;
   width: 945px;
   text-align: left; }
+  #content-wrapper.lock .title-container .buttons a,
+  #content-wrapper.lock .times .results .clear-btn {
+    opacity: .2;
+    cursor: default; }
 
 .title-container .buttons {
   display: inline-block;
@@ -143,6 +147,8 @@ textarea {
       padding: 3px 0; }
     .times .results .clear-btn {
       color: #a00; }
+      .times .results .clear-btn:hover {
+        opacity: .8; }
 
 .hidden {
   display: none !important; }

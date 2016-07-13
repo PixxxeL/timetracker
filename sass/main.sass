@@ -92,6 +92,11 @@ textarea
     margin: 20px auto
     width: $desktopWidth
     text-align: left
+    &.lock
+        .title-container .buttons a,
+        .times .results .clear-btn
+            opacity: .2
+            cursor: default
 
 .title-container
     .buttons
@@ -148,6 +153,8 @@ textarea
             padding: 3px 0
         .clear-btn
             color: #a00
+            &:hover
+                opacity: .8
 
 // =============================================================================
 
