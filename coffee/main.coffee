@@ -3,9 +3,8 @@
 TODO:
     1. Переименование проекта
     2. При удалении переключать не на дефолтный а на существующий
-    3. При добавление проверять уникальность проекта
-    4. Если проект 1 то выпадайку не показывать
-    5. При клике вне выпадайки - убирать её
+    3. Регулярное сохранение таймера
+    4. Блок интерфейса при таймере или его останов
 """
 
 
@@ -22,6 +21,8 @@ TIMETRACKER.App = ->
     toggleEl = $('.timer-container a.btn')
     startDate = null
     curDesc = ''
+    titles = []
+    #loopCounter = 0
 
     load = ->
         data = localStorage.getItem TIMETRACKER.Settings.dataStorageKey
@@ -48,6 +49,7 @@ TIMETRACKER.App = ->
         "#{hours}:#{minutes}:#{seconds}"
 
     renderFrame = ->
+        #loopCounter += 1
         if startDate
             diff = new Date().getTime() - startDate.getTime()
             timerEl.text formatMilliseconds(diff)
@@ -83,6 +85,11 @@ TIMETRACKER.App = ->
             $('.select-project').append """
             <option value="#{title}"#{selected}>#{title}</option>
             """
+            titles.push title
+        if titles.length < 2
+            $('.swap-project').hide()
+        else
+            $('.swap-project').show()
 
     toggleTimer = (e) ->
         e.preventDefault()
@@ -99,6 +106,7 @@ TIMETRACKER.App = ->
             renderResults()
         else
             toggleEl.find('i.fa').removeClass('fa-play').addClass('fa-pause')
+            #loopCounter = 0
             startDate = new Date
             curDesc = prompt 'Можете ввести пояснение:'
             curDesc = $.trim curDesc
@@ -119,6 +127,8 @@ TIMETRACKER.App = ->
         $('.swap-project').toggle()
         $('.select-project').toggle()
         null
+
+    ## Bindings
 
     timerEl.on 'click', toggleTimer
 
@@ -142,7 +152,7 @@ TIMETRACKER.App = ->
 
     $('.swap-project').on 'click', (e) ->
         e.preventDefault()
-        # TODO: if len==1 return
+        e.stopPropagation()
         toggleProjectSelectList()
         null
 
@@ -152,7 +162,9 @@ TIMETRACKER.App = ->
         setProject()
         toggleProjectSelectList()
         null
-    )
+    ).on 'click', (e) ->
+        e.stopPropagation()
+        null
 
     $('.add-project').on 'click', (e) ->
         e.preventDefault()
@@ -160,7 +172,8 @@ TIMETRACKER.App = ->
         title = $.trim title
         if not title
             return alert('Вы не ввели название проекта')
-        # TODO: check what project is not exist
+        if $.inArray title, titles != -1
+            return alert('Такой проект уже существует')
         TIMETRACKER.Data.current = title
         TIMETRACKER.Data.data[title] = []
         save()
@@ -180,11 +193,12 @@ TIMETRACKER.App = ->
             setProject()
         null
 
-    # TODO: click outside of select list
-    #$(window).on 'click', ->
-    #    if $('.select-project').is ':visible'
-    #        toggleProjectSelectList()
-    #    null
+    $(window).on 'click', (e) ->
+        if $('.select-project').is(':visible') and not $(e.target).hasClass('select-project')
+            toggleProjectSelectList()
+        null
+
+    ## Entry point
 
     load()
     renderProjectSelectList()
