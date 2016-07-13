@@ -48,6 +48,7 @@ gulp.task('watch', function () {
 gulp.task('default', ['jade', 'sass', 'coffee', 'server', 'watch']);
 
 gulp.task('build', function () {
+    gulp.src('timetracker.appcache').pipe(gulp.dest('build'));
     gulp.src('css/*.css').pipe(gulp.dest('build/css'));
     gulp.src('bower_components/html5-boilerplate/dist/css/normalize.css').pipe(gulp.dest('build/css'));
     gulp.src('bower_components/font-awesome/css/font-awesome.min.css').pipe(gulp.dest('build/css'));
