@@ -127,7 +127,8 @@ textarea {
   .timer-container .total-time {
     display: inline-block;
     font-size: 16px;
-    margin-left: 40px; }
+    margin-left: 40px;
+    text-align: right; }
     .timer-container .total-time .value {
       font-weight: bold;
       margin-left: 5px; }
@@ -149,6 +150,11 @@ textarea {
       color: #a00; }
       .times .results .clear-btn:hover {
         opacity: .8; }
+  .times .closer {
+    margin-left: 15px; }
+  .times .closed {
+    text-decoration: line-through;
+    color: #999; }
 
 .hidden {
   display: none !important; }

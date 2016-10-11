@@ -58,23 +58,34 @@ TIMETRACKER.App = function() {
     return null;
   };
   renderResults = function() {
-    var html, total;
+    var html, opened, total, total_container;
     total = 0;
+    opened = 0;
     if (TIMETRACKER.Data.data[TIMETRACKER.Data.current].length) {
       html = '';
       $.each(TIMETRACKER.Data.data[TIMETRACKER.Data.current], function() {
-        var diff, end, start;
+        var checked, closed, diff, end, start;
         start = new Date(this.startTs).toLocaleString();
         end = new Date(this.endTs).toLocaleString();
         diff = this.endTs - this.startTs;
-        html += "<tr data-start=\"" + this.startTs + "\" data-end=\"" + this.endTs + "\">\n    <td>" + start + "</td>\n    <td>" + end + "</td>\n    <td>" + this.desc + "</td>\n    <td>" + (formatMilliseconds(diff)) + "</td>\n    <td><a href=\"#\" class=\"clear-btn\" title=\"Удалить\"><i class=\"fa fa-remove\"></i></a></td>\n</tr>";
+        if (this.closed) {
+          checked = 'checked';
+          closed = 'class="closed"';
+        } else {
+          checked = '';
+          closed = '';
+          opened += diff;
+        }
+        html += "<tr data-start=\"" + this.startTs + "\" data-end=\"" + this.endTs + "\">\n    <td><input type=\"checkbox\" class=\"closer\" " + checked + "></td>\n    <td " + closed + ">" + start + "</td>\n    <td " + closed + ">" + end + "</td>\n    <td " + closed + ">" + this.desc + "</td>\n    <td " + closed + ">" + (formatMilliseconds(diff)) + "</td>\n    <td><a href=\"#\" class=\"clear-btn\" title=\"Удалить\"><i class=\"fa fa-remove\"></i></a></td>\n</tr>";
         return total += diff;
       });
       $('.times').find('.empty').hide().end().find('.results').show().find('tbody').html(html);
     } else {
       $('.times').find('.empty').show().end().find('.results').hide();
     }
-    $('.timer-container .total-time .value').text(formatMilliseconds(total));
+    total_container = $('.timer-container .total-time');
+    total_container.find('.value.total').text(formatMilliseconds(total));
+    total_container.find('.value.opened').text(formatMilliseconds(opened));
     return null;
   };
   renderProjectSelectList = function() {
@@ -101,7 +112,8 @@ TIMETRACKER.App = function() {
     timeItem = {
       startTs: startTs,
       endTs: new Date().getTime(),
-      desc: curDesc
+      desc: curDesc,
+      closed: false
     };
     if (insert) {
       times.unshift(timeItem);
@@ -173,6 +185,29 @@ TIMETRACKER.App = function() {
         save();
         renderResults();
       }
+    }
+    return null;
+  });
+  $('.times .results').on('change', '.closer', function(e) {
+    var closed, end, item, start, tr;
+    e.preventDefault();
+    if (startDate) {
+      return alert('Нельзя учесть пока работает таймер');
+    }
+    tr = $(this).parents('tr');
+    start = parseFloat(tr.data('start'));
+    end = parseFloat(tr.data('end'));
+    closed = -1;
+    $.each(TIMETRACKER.Data.data[TIMETRACKER.Data.current], function(idx, item) {
+      if (item.startTs === start && item.endTs === end) {
+        return closed = idx;
+      }
+    });
+    if (closed !== -1) {
+      item = TIMETRACKER.Data.data[TIMETRACKER.Data.current][closed];
+      item.closed = !item.closed;
+      save();
+      renderResults();
     }
     return null;
   });

@@ -60,24 +60,35 @@ TIMETRACKER.App = ->
 
     renderResults = ->
         total = 0
+        opened = 0
         if TIMETRACKER.Data.data[TIMETRACKER.Data.current].length
             html = ''
             $.each TIMETRACKER.Data.data[TIMETRACKER.Data.current], ->
                 start = new Date(this.startTs).toLocaleString()
                 end = new Date(this.endTs).toLocaleString()
                 diff = this.endTs - this.startTs
+                if this.closed
+                    checked = 'checked'
+                    closed = 'class="closed"'
+                else
+                    checked = ''
+                    closed = ''
+                    opened += diff
                 html += """<tr data-start="#{this.startTs}" data-end="#{this.endTs}">
-                    <td>#{start}</td>
-                    <td>#{end}</td>
-                    <td>#{this.desc}</td>
-                    <td>#{formatMilliseconds(diff)}</td>
+                    <td><input type="checkbox" class="closer" #{checked}></td>
+                    <td #{closed}>#{start}</td>
+                    <td #{closed}>#{end}</td>
+                    <td #{closed}>#{this.desc}</td>
+                    <td #{closed}>#{formatMilliseconds(diff)}</td>
                     <td><a href="#" class="clear-btn" title="Удалить"><i class="fa fa-remove"></i></a></td>
                 </tr>"""
                 total += diff
             $('.times').find('.empty').hide().end().find('.results').show().find('tbody').html html
         else
             $('.times').find('.empty').show().end().find('.results').hide()
-        $('.timer-container .total-time .value').text formatMilliseconds(total)
+        total_container = $('.timer-container .total-time')
+        total_container.find('.value.total').text formatMilliseconds(total)
+        total_container.find('.value.opened').text formatMilliseconds(opened)
         null
 
     renderProjectSelectList = ->
@@ -100,6 +111,7 @@ TIMETRACKER.App = ->
             startTs : startTs
             endTs : new Date().getTime()
             desc : curDesc
+            closed : false
         }
         if insert
             times.unshift timeItem
@@ -165,6 +177,24 @@ TIMETRACKER.App = ->
                 TIMETRACKER.Data.data[TIMETRACKER.Data.current].splice removed, 1
                 save()
                 renderResults()
+        null
+
+    $('.times .results').on 'change', '.closer', (e) ->
+        e.preventDefault()
+        if startDate
+            return alert 'Нельзя учесть пока работает таймер'
+        tr = $(@).parents('tr')
+        start = parseFloat tr.data('start')
+        end = parseFloat tr.data('end')
+        closed = -1
+        $.each TIMETRACKER.Data.data[TIMETRACKER.Data.current], (idx, item) ->
+            if item.startTs == start and item.endTs == end
+                closed = idx
+        if closed != -1
+            item = TIMETRACKER.Data.data[TIMETRACKER.Data.current][closed]
+            item.closed = not item.closed
+            save()
+            renderResults()
         null
 
     $('.swap-project').on 'click', (e) ->
