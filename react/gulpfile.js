@@ -21,14 +21,15 @@ var paths = {
     'build'  : '../www'
 };
 
-var separateJsFiles = [];
+var separateJsFiles = [
+    'js/polyfill.js',
+    'js/timetracker.js'
+];
 
 /**
  * Add js files here for compress and concatenate
  */
-var concatenatedJsFiles = [
-    'js/timetracker.js'
-];
+var concatenatedJsFiles = [];
 
 /**
  * Add css files here for compress and concatenate
