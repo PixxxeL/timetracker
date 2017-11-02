@@ -4,7 +4,7 @@ You must have Node.js and NPM
 
 For developement:
 
-* Change directory to repository root
+* Change directory to `jquery` or `react` in repository root
 * Run `npm install -g bower gulp`
 * Run `bower install`
 * Run `npm install`
@@ -13,7 +13,7 @@ For developement:
 
 For using:
 
-* Change directory to repository root
+* Change directory to `jquery` or `react` in repository root
 * Run `npm install -g bower gulp`
 * Run `bower install`
 * Run `npm install`

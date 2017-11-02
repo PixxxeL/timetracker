@@ -19,12 +19,10 @@
   "dependencies": {
     "del": "^3.0.0",
     "gulp": "^3.9.1",
-    "gulp-coffee": "^2.3.4",
     "gulp-concat": "^2.6.1",
     "gulp-html-replace": "^1.6.2",
     "gulp-jade": "^1.1.0",
     "gulp-rename": "^1.2.2",
-    "gulp-sass": "^3.1.0",
     "gulp-shell": "^0.6.3",
     "gulp-sourcemaps": "^2.6.1",
     "gulp-yuicompressor": "0.0.3",

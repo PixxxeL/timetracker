@@ -1,12 +1,8 @@
 var gulp       = require('gulp'),
     gutil      = require('gutil'),
     del        = require('del'),
-    sass       = require('gulp-sass'),
     jade       = require('gulp-jade'),
-    coffee     = require('gulp-coffee'),
     rename     = require('gulp-rename'),
-    //replStr    = require('gulp-replace'),
-    //ftp        = require('vinyl-ftp'),
     sourcemaps = require('gulp-sourcemaps'),
     compress   = require('gulp-yuicompressor'),
     concat     = require('gulp-concat'),
@@ -17,27 +13,21 @@ var gulp       = require('gulp'),
 var HOST   = '127.0.0.1',
     PORT   = 8090,
     SERVER = HOST + ':' + PORT,
-    GA     = '', // if you need Google Analytics
     DEBUG  = true,
     IS_PHP = false; // if you need PHP microfw
 
 var paths = {
-    'sass'   : './sass/**/*.sass',
     'jade'   : './jade/**/*.jade',
-    'coffee' : './coffee/**/*.coffee',
-    'build'  : 'build' // I'm using ../../build
+    'build'  : '../www'
 };
 
-var separateJsFiles = [
-    'js/html5shiv.min.js', 'js/respond.min.js',
-    'js/jquery-1.12.4.min.js', 'js/jquery-2.2.4.min.js'
-];
+var separateJsFiles = [];
 
 /**
  * Add js files here for compress and concatenate
  */
 var concatenatedJsFiles = [
-    'js/main.js'
+    'js/timetracker.js'
 ];
 
 /**
@@ -52,36 +42,6 @@ var errHandler = function (err) {
     gutil.log('Error', err);
 };
 
-
-gulp.task('sass', function () {
-    var output = DEBUG ? 'expanded' : 'compressed';
-    var pipe = gulp.src(paths.sass);
-    if (DEBUG) {
-        pipe = pipe.pipe(sourcemaps.init());
-    }
-    pipe = pipe.pipe(sass({ // https://github.com/sass/node-sass#includepaths
-        indentWidth : 4,
-        outputStyle : output
-    }).on('error', errHandler));
-    if (DEBUG) {
-        pipe = pipe.pipe(sourcemaps.write());
-    }
-    pipe.pipe(gulp.dest('css'));
-});
-
-gulp.task('coffee', function () {
-    var pipe = gulp.src(paths.coffee);
-    if (DEBUG) {
-        pipe = pipe.pipe(sourcemaps.init());
-    }
-    pipe = pipe.pipe(coffee({
-        bare: true
-    })).on('error', errHandler);
-    if (DEBUG) {
-        pipe = pipe.pipe(sourcemaps.write());
-    }
-    pipe.pipe(gulp.dest('js'));
-});
 
 gulp.task('jade', function () {
     var pipe = gulp.src(paths.jade);
@@ -104,16 +64,14 @@ gulp.task('browse', shell.task(['start http://' + SERVER + '/html/']));
 
 gulp.task('watch', function () {
     gulp.watch(paths.jade, ['jade']);
-    gulp.watch(paths.sass, ['sass']);
-    gulp.watch(paths.coffee, ['coffee']);
 });
 
-gulp.task('compile', ['jade', 'sass', 'coffee']);
+gulp.task('compile', ['jade']);
 
 /**
  * Development task
  */
-gulp.task('default', ['compile', 'py-server', 'watch', 'browse']);
+gulp.task('default', ['compile', 'py-server', 'watch']);
 
 
 /**
@@ -126,16 +84,7 @@ gulp.task('copy', function () {
     gulp.src('bower_components/font-awesome/css/font-awesome.min.css')
         .pipe(gulp.dest('css'));
     gulp.src('bower_components/font-awesome/fonts/*.*').pipe(gulp.dest('fonts'));
-    gulp.src('bower_components/jquery-legacy/dist/jquery.min.js')
-        .pipe(rename('jquery-1.12.4.min.js'))
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/jquery-modern/dist/jquery.min.js')
-        .pipe(rename('jquery-2.2.4.min.js'))
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/respond/dest/respond.min.js')
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/html5shiv/dist/html5shiv.min.js')
-        .pipe(gulp.dest('js'));
+    gulp.src('../jquery/css/main.css').pipe(gulp.dest('css'));
 });
 
 /**
@@ -164,13 +113,8 @@ gulp.task('static-build', function () {
         .pipe(gulp.dest(paths.build + '/js'));
     gulp.src('html/index.html')
         .pipe(replHtml({
-            'css': '/css/styles.min.css',
-            'js' : '/js/app.min.js',
-            'ga' : DEBUG ? '' : GA
+            'css': '/css/styles.min.css'
         }))
-        //.pipe(replStr(/"\/js\//g, '"js/'))
-        //.pipe(replStr(/"\/css\//g, '"css/'))
-        //.pipe(replStr(/"[^"]+\/img\//g, '"img/'))
         .pipe(gulp.dest(paths.build + htmlDir));
 });
 
@@ -224,20 +168,3 @@ gulp.task('py-demo', shell.task([
 gulp.task('php-demo', shell.task([
     'cd ' + paths.build + ' && php -S ' + SERVER
 ]));
-
-/**
- * Deploy through FTP
- * https://www.npmjs.com/package/vinyl-ftp
- */
-/*gulp.task('ftp-deploy', function () {
-    var conn = ftp.create({
-        host:     '',
-        user:     '',
-        password: '',
-        parallel: 10,
-        log:      console.log
-    });
-    gulp.src(paths.build + '/**', {base: '.', buffer: false})
-        .pipe(conn.dest(''));
-});
-gulp.task('deploy', ['build', 'ftp-deploy']);*/
