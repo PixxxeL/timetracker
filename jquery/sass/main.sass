@@ -1,4 +1,4 @@
-@import "./_definitions"
+@import "./_definitions.sass"
 
 html, body
     color: #333
@@ -99,6 +99,8 @@ textarea
             cursor: default
 
 .title-container
+    h1
+        line-height: 1em
     .buttons
         display: inline-block
         float: right
@@ -161,6 +163,41 @@ textarea
     .closed
         text-decoration: line-through
         color: #999
+
+
+$width : $desktopWidth - 1px
+@media screen and (max-width: $width)
+    .m-hidden
+        display: none
+    #content-wrapper
+        margin: 10px 0
+        width: 100%
+    .title-container
+        margin: 0 10px
+        .buttons
+            display: block
+            float: none
+            margin: 0 0 10px
+            text-align: right
+            .select-project
+                max-width: 200px
+                width: auto
+    .timer-container
+        margin: 0 10px
+        .total-time
+            display: block
+            text-align: left
+            margin-left: 0
+            margin-top: 10px
+    .times
+        .results
+            font-size: 12px
+            th
+                display: none
+            td
+                padding: 5px
+        .closer
+            margin-left: 0
 
 // =============================================================================
 

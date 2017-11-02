@@ -1,0 +1,34 @@
+{
+  "name": "timetracker-react",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/PixxxeL/timetracker.git"
+  },
+  "author": "piksel@mail.ru",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/PixxxeL/timetracker/issues"
+  },
+  "homepage": "https://github.com/PixxxeL/timetracker#readme",
+  "dependencies": {
+    "del": "^3.0.0",
+    "gulp": "^3.9.1",
+    "gulp-coffee": "^2.3.4",
+    "gulp-concat": "^2.6.1",
+    "gulp-html-replace": "^1.6.2",
+    "gulp-jade": "^1.1.0",
+    "gulp-rename": "^1.2.2",
+    "gulp-sass": "^3.1.0",
+    "gulp-shell": "^0.6.3",
+    "gulp-sourcemaps": "^2.6.1",
+    "gulp-yuicompressor": "0.0.3",
+    "gulp-zip": "^4.0.0",
+    "gutil": "^1.6.4"
+  }
+}

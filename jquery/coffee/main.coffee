@@ -70,15 +70,17 @@ TIMETRACKER.App = ->
                 if this.closed
                     checked = 'checked'
                     closed = 'class="closed"'
+                    hidden = 'class="m-hidden closed"'
                 else
                     checked = ''
                     closed = ''
+                    hidden = 'class="m-hidden"'
                     opened += diff
                 html += """<tr data-start="#{this.startTs}" data-end="#{this.endTs}">
                     <td><input type="checkbox" class="closer" #{checked}></td>
                     <td #{closed}>#{start}</td>
                     <td #{closed}>#{end}</td>
-                    <td #{closed}>#{this.desc}</td>
+                    <td #{hidden}>#{this.desc}</td>
                     <td #{closed}>#{formatMilliseconds(diff)}</td>
                     <td><a href="#" class="clear-btn" title="Удалить"><i class="fa fa-remove"></i></a></td>
                 </tr>"""

@@ -93,6 +93,9 @@ textarea {
     opacity: .2;
     cursor: default; }
 
+.title-container h1 {
+  line-height: 1em; }
+
 .title-container .buttons {
   display: inline-block;
   float: right;
@@ -155,6 +158,38 @@ textarea {
   .times .closed {
     text-decoration: line-through;
     color: #999; }
+
+@media screen and (max-width: 944px) {
+  .m-hidden {
+    display: none; }
+  #content-wrapper {
+    margin: 10px 0;
+    width: 100%; }
+  .title-container {
+    margin: 0 10px; }
+    .title-container .buttons {
+      display: block;
+      float: none;
+      margin: 0 0 10px;
+      text-align: right; }
+      .title-container .buttons .select-project {
+        max-width: 200px;
+        width: auto; }
+  .timer-container {
+    margin: 0 10px; }
+    .timer-container .total-time {
+      display: block;
+      text-align: left;
+      margin-left: 0;
+      margin-top: 10px; }
+  .times .results {
+    font-size: 12px; }
+    .times .results th {
+      display: none; }
+    .times .results td {
+      padding: 5px; }
+  .times .closer {
+    margin-left: 0; } }
 
 .hidden {
   display: none !important; }

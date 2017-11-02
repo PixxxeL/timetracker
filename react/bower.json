@@ -1,0 +1,26 @@
+{
+  "name": "timetracker-react",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "piksel@mail.ru"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/PixxxeL/timetracker",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "jquery-legacy": "jquery#1.12.4",
+    "jquery-modern": "jquery#2.2.4",
+    "html5-boilerplate": "^6.0.1",
+    "font-awesome": "^4.7.0",
+    "html5shiv": "^3.7.3",
+    "respond": "^1.4.2"
+  }
+}
