@@ -20515,11 +20515,29 @@ Object.defineProperty(exports, "__esModule", {
     value: true
 });
 
+var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
+
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
 var _react = __webpack_require__(66);
 
 var _react2 = _interopRequireDefault(_react);
+
+var _localStorage = __webpack_require__(361);
+
+var _localStorage2 = _interopRequireDefault(_localStorage);
+
+var _Title = __webpack_require__(358);
+
+var _Title2 = _interopRequireDefault(_Title);
+
+var _Timer = __webpack_require__(359);
+
+var _Timer2 = _interopRequireDefault(_Timer);
+
+var _Times = __webpack_require__(360);
+
+var _Times2 = _interopRequireDefault(_Times);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20537,21 +20555,150 @@ var Application = function (_React$Component) {
 
         var _this = _possibleConstructorReturn(this, (Application.__proto__ || Object.getPrototypeOf(Application)).call(this, props));
 
-        _this.state = {};
+        _this.state = {
+            current: 'Default',
+            data: {
+                'Default': []
+            }
+        };
+        _this.changeProject = _this._changeProject.bind(_this);
+        _this.addProject = _this._addProject.bind(_this);
+        _this.removeProject = _this._removeProject.bind(_this);
+        _this.setNewDate = _this._setNewDate.bind(_this);
+        _this.closeTime = _this._closeTime.bind(_this);
+        _this.removeTime = _this._removeTime.bind(_this);
         return _this;
     }
 
     _createClass(Application, [{
-        key: "componentWillMount",
-        value: function componentWillMount() {}
+        key: 'componentWillMount',
+        value: function componentWillMount() {
+            this.setState(_localStorage2.default.get('data'));
+        }
     }, {
-        key: "render",
+        key: 'componentWillUpdate',
+        value: function componentWillUpdate(nextProps, nextState) {
+            var term1 = nextState.current != this.state.current,
+                term2 = JSON.stringify(this.state.data) != JSON.stringify(nextState.data);
+            if (term1 || term2) {
+                _localStorage2.default.set('data', {
+                    current: nextState.current,
+                    data: nextState.data
+                });
+            }
+        }
+    }, {
+        key: 'render',
         value: function render() {
             return _react2.default.createElement(
-                "div",
-                { id: "content-wrapper" },
-                "Application"
+                'div',
+                { id: 'content-wrapper' },
+                _react2.default.createElement(_Title2.default, _extends({
+                    changeProject: this.changeProject,
+                    addProject: this.addProject,
+                    removeProject: this.removeProject
+                }, this.state)),
+                _react2.default.createElement(_Timer2.default, _extends({
+                    setNewDate: this.setNewDate
+                }, this.state)),
+                _react2.default.createElement(_Times2.default, _extends({
+                    close: this.closeTime,
+                    remove: this.removeTime
+                }, this.state))
             );
+        }
+    }, {
+        key: '_addProject',
+        value: function _addProject(e) {
+            e.preventDefault();
+            //if (this.state.startDate) {
+            //    return window.alert('Нельзя добавить проект пока работает таймер');
+            //}
+            var title = window.prompt('Введите название нового проекта:').trim();
+            if (!title) {
+                return window.alert('Вы не ввели название проекта');
+            }
+            if (Object.keys(this.state.data).includes(title)) {
+                return window.alert('Такой проект уже существует');
+            }
+            var data = this.state.data;
+            data[title] = [];
+            this.setState({
+                current: title,
+                data: data
+            });
+        }
+    }, {
+        key: '_removeProject',
+        value: function _removeProject(e) {
+            e.preventDefault();
+            //if (this.state.startDate) {
+            //    return window.alert('Нельзя удалить проект пока работает таймер');
+            //}
+            if (window.confirm('Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?')) {
+                if (this.state.current == 'Default') {
+                    return window.alert('Нельзя удалить проект `Default`');
+                }
+                var data = this.state.data;
+                delete data[this.state.current];
+                this.setState({
+                    current: 'Default',
+                    data: data
+                });
+            }
+        }
+    }, {
+        key: '_changeProject',
+        value: function _changeProject(e) {
+            this.setState({
+                current: e.target.value
+            });
+        }
+    }, {
+        key: '_setNewDate',
+        value: function _setNewDate(timeItem, startTs) {
+            var insert = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
+
+            var times = this.state.data[this.state.current];
+            if (insert) {
+                times.unshift(timeItem);
+            } else {
+                times[times.findIndex(function (time) {
+                    return time.startTs == startTs;
+                })] = timeItem;
+            }
+            this.setState({
+                data: this.state.data
+            });
+        }
+    }, {
+        key: '_closeTime',
+        value: function _closeTime(startTs, closed) {
+            //'Нельзя учесть пока работает таймер'
+            var times = this.state.data[this.state.current];
+            var time = times.find(function (time) {
+                return time.startTs == startTs;
+            });
+            time.closed = closed;
+            this.setState({
+                data: this.state.data
+            });
+        }
+    }, {
+        key: '_removeTime',
+        value: function _removeTime(startTs) {
+            //'Нельзя удалить пока работает таймер'
+            if (!window.confirm('Действительно хотите удалить\nбез возможности восстановить?')) {
+                return;
+            }
+            var times = this.state.data[this.state.current];
+            var idx = times.findIndex(function (time) {
+                return time.startTs == startTs;
+            });
+            delete times[idx];
+            this.setState({
+                data: this.state.data
+            });
         }
     }]);
 
@@ -20561,6 +20708,608 @@ var Application = function (_React$Component) {
 ;
 
 exports.default = Application;
+
+/***/ }),
+
+/***/ 358:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(66);
+
+var _react2 = _interopRequireDefault(_react);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Title = function (_React$Component) {
+    _inherits(Title, _React$Component);
+
+    function Title(props) {
+        _classCallCheck(this, Title);
+
+        var _this = _possibleConstructorReturn(this, (Title.__proto__ || Object.getPrototypeOf(Title)).call(this, props));
+
+        _this.state = {
+            isSelect: false
+        };
+        _this.selectProject = _this._selectProject.bind(_this);
+        _this.setSelectProjectRef = _this._setSelectProjectRef.bind(_this);
+        _this.clickOutsideSelectProject = _this._clickOutsideSelectProject.bind(_this);
+        _this.changeProject = _this._changeProject.bind(_this);
+        return _this;
+    }
+
+    _createClass(Title, [{
+        key: 'componentDidMount',
+        value: function componentDidMount() {
+            document.addEventListener('mouseup', this.clickOutsideSelectProject);
+        }
+    }, {
+        key: 'componentWillUnmount',
+        value: function componentWillUnmount() {
+            document.removeEventListener('mouseup', this.clickOutsideSelectProject);
+        }
+    }, {
+        key: 'render',
+        value: function render() {
+            var titles = this._getTitles(this.props);
+            return _react2.default.createElement(
+                'div',
+                { className: 'title-container' },
+                _react2.default.createElement(
+                    'div',
+                    { className: 'buttons' },
+                    this.state.isSelect ? _react2.default.createElement(
+                        'select',
+                        {
+                            className: 'select-project',
+                            value: this.props.current,
+                            onChange: this.changeProject,
+                            ref: this.setSelectProjectRef
+                        },
+                        titles.map(function (title, idx) {
+                            return _react2.default.createElement(
+                                'option',
+                                { key: idx, value: title },
+                                title
+                            );
+                        })
+                    ) : null,
+                    titles.length > 1 && !this.state.isSelect ? _react2.default.createElement(
+                        'a',
+                        {
+                            href: '#',
+                            title: '\u0421\u043C\u0435\u043D\u0438\u0442\u044C \u043F\u0440\u043E\u0435\u043A\u0442',
+                            className: 'swap-project',
+                            onClick: this.selectProject
+                        },
+                        _react2.default.createElement('i', { className: 'fa fa-list' })
+                    ) : null,
+                    _react2.default.createElement(
+                        'a',
+                        {
+                            href: '#',
+                            title: '\u0414\u043E\u0431\u0430\u0432\u0438\u0442\u044C \u043F\u0440\u043E\u0435\u043A\u0442',
+                            className: 'add-project',
+                            onClick: this.props.addProject
+                        },
+                        _react2.default.createElement('i', { className: 'fa fa-plus' })
+                    ),
+                    _react2.default.createElement(
+                        'a',
+                        {
+                            href: '#',
+                            title: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C \u043F\u0440\u043E\u0435\u043A\u0442',
+                            className: 'remove-project',
+                            onClick: this.props.removeProject
+                        },
+                        _react2.default.createElement('i', { className: 'fa fa-minus' })
+                    )
+                ),
+                _react2.default.createElement(
+                    'h1',
+                    null,
+                    'Time Tracker',
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'project-name' },
+                        ' \u2014 ',
+                        this.props.current
+                    )
+                )
+            );
+        }
+    }, {
+        key: '_getTitles',
+        value: function _getTitles(props) {
+            if (!props.data || !props.data.Default) {
+                return [];
+            }
+            return Object.keys(props.data);
+        }
+    }, {
+        key: '_selectProject',
+        value: function _selectProject(e) {
+            e.preventDefault();
+            if (this.props.startDate) {
+                return window.alert('Нельзя переключить пока работает таймер');
+            }
+            this.setState({
+                isSelect: !this.state.isSelect
+            });
+        }
+    }, {
+        key: '_setSelectProjectRef',
+        value: function _setSelectProjectRef(node) {
+            this.SelectProjectRef = node;
+        }
+    }, {
+        key: '_clickOutsideSelectProject',
+        value: function _clickOutsideSelectProject(e) {
+            if (this.SelectProjectRef && !this.SelectProjectRef.contains(e.target)) {
+                this.setState({
+                    isSelect: false
+                });
+            }
+        }
+    }, {
+        key: '_changeProject',
+        value: function _changeProject(e) {
+            this.props.changeProject(e);
+            this.setState({
+                isSelect: false
+            });
+        }
+    }]);
+
+    return Title;
+}(_react2.default.Component);
+
+exports.default = Title;
+
+/***/ }),
+
+/***/ 359:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(66);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _text = __webpack_require__(362);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Timer = function (_React$Component) {
+    _inherits(Timer, _React$Component);
+
+    function Timer(props) {
+        _classCallCheck(this, Timer);
+
+        var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
+
+        _this.state = {
+            startDate: null,
+            diff: 0
+        };
+        _this.loopCounter = 0;
+        _this.curDesc = '';
+        _this.toggle = _this._toggle.bind(_this);
+        _this._renderFrame = _this._renderFrame.bind(_this);
+        return _this;
+    }
+
+    _createClass(Timer, [{
+        key: 'render',
+        value: function render() {
+            var css = this.state.startDate ? 'fa fa-pause' : 'fa fa-play';
+            return _react2.default.createElement(
+                'div',
+                { className: 'timer-container' },
+                _react2.default.createElement(
+                    'a',
+                    { href: '#', title: '\u0422\u0430\u0439\u043C\u0435\u0440', className: 'btn', onClick: this.toggle },
+                    _react2.default.createElement('i', { className: css })
+                ),
+                _react2.default.createElement(
+                    'a',
+                    { href: '#', title: '\u0422\u0430\u0439\u043C\u0435\u0440', className: 'label', onClick: this.toggle },
+                    (0, _text.formatMilliseconds)(this.state.diff)
+                ),
+                _react2.default.createElement(
+                    'div',
+                    { className: 'total-time' },
+                    '\u0412\u0441\u0435\u0433\u043E \u0432\u0440\u0435\u043C\u0435\u043D\u0438 \u0432 \u043F\u0440\u043E\u0435\u043A\u0442\u0435: ',
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'total value' },
+                        '0:00:00'
+                    ),
+                    _react2.default.createElement('br', null),
+                    '\u043D\u0435 \u0443\u0447\u0442\u0435\u043D\u043D\u043E\u0433\u043E: ',
+                    _react2.default.createElement(
+                        'span',
+                        { className: 'opened value' },
+                        '0:00:00'
+                    )
+                )
+            );
+        }
+    }, {
+        key: '_toggle',
+        value: function _toggle(e) {
+            var _this2 = this;
+
+            e.preventDefault();
+            var startDate = null,
+                insertTime = false;
+            if (!this.state.startDate) {
+                startDate = new Date();
+                insertTime = true;
+                this.loopCounter = 0;
+                this.curDesc = window.prompt('Можете ввести пояснение:', '').trim();
+                window.requestAnimationFrame(this._renderFrame);
+            }
+            this.setState({
+                startDate: startDate
+            }, function () {
+                _this2._saveTimer(insertTime);
+            });
+        }
+    }, {
+        key: '_renderFrame',
+        value: function _renderFrame() {
+            if (this.state.startDate) {
+                var diff = new Date().getTime() - this.state.startDate.getTime();
+                this.setState({
+                    diff: diff
+                });
+                if (++this.loopCounter % 100 === 0) {
+                    // per 5 seconds
+                    this._saveTimer();
+                }
+                window.requestAnimationFrame(this._renderFrame);
+            }
+        }
+    }, {
+        key: '_saveTimer',
+        value: function _saveTimer() {
+            /*const startTs = this.state.startDate.getTime();
+            const timeItem = {
+                startTs : startTs,
+                endTs : new Date().getTime(),
+                desc : this.curDesc,
+                closed : false
+            };
+            this.props.setNewDate(timeItem, startTs, insert);*/
+
+            var insert = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+        }
+    }]);
+
+    return Timer;
+}(_react2.default.Component);
+
+exports.default = Timer;
+
+/***/ }),
+
+/***/ 360:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(66);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _TimeRow = __webpack_require__(363);
+
+var _TimeRow2 = _interopRequireDefault(_TimeRow);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var Times = function (_React$Component) {
+    _inherits(Times, _React$Component);
+
+    function Times() {
+        _classCallCheck(this, Times);
+
+        return _possibleConstructorReturn(this, (Times.__proto__ || Object.getPrototypeOf(Times)).apply(this, arguments));
+    }
+
+    _createClass(Times, [{
+        key: 'render',
+        value: function render() {
+            var _this2 = this;
+
+            var times = this.props.data[this.props.current];
+            return _react2.default.createElement(
+                'div',
+                { className: 'times' },
+                times.length ? _react2.default.createElement(
+                    'table',
+                    { className: 'results' },
+                    _react2.default.createElement(
+                        'thead',
+                        null,
+                        _react2.default.createElement(
+                            'tr',
+                            null,
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '\u0423\u0447\u0442\u0435\u043D\u043E'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '\u041D\u0430\u0447\u0430\u043B\u043E'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '\u0417\u0430\u0432\u0435\u0440\u0448\u0435\u043D\u0438\u0435'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '\u041F\u043E\u044F\u0441\u043D\u0435\u043D\u0438\u0435'
+                            ),
+                            _react2.default.createElement(
+                                'th',
+                                null,
+                                '\u0412\u0441\u0435\u0433\u043E'
+                            ),
+                            _react2.default.createElement('th', null)
+                        )
+                    ),
+                    _react2.default.createElement(
+                        'tbody',
+                        null,
+                        times.map(function (time, idx) {
+                            return _react2.default.createElement(_TimeRow2.default, {
+                                key: idx,
+                                time: time,
+                                close: _this2.props.close,
+                                remove: _this2.props.remove
+                            });
+                        })
+                    )
+                ) : _react2.default.createElement(
+                    'div',
+                    { className: 'empty' },
+                    '\u041F\u043E\u043A\u0430 \u043D\u0435\u0442 \u0443\u0447\u0442\u0435\u043D\u043D\u043E\u0433\u043E \u0432\u0440\u0435\u043C\u0435\u043D\u0438'
+                )
+            );
+        }
+    }]);
+
+    return Times;
+}(_react2.default.Component);
+
+exports.default = Times;
+
+/***/ }),
+
+/***/ 361:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+
+    /**
+     * 
+     */
+    get: function get(key) {
+        try {
+            return JSON.parse(window.localStorage.getItem(this._getStorageKey(key)));
+        } catch (err) {}
+    },
+
+
+    /**
+     * 
+     */
+    set: function set(key, data) {
+        try {
+            window.localStorage.setItem(this._getStorageKey(key), JSON.stringify(data));
+        } catch (err) {}
+    },
+
+
+    /**
+     * 
+     */
+    _getStorageKey: function _getStorageKey(key) {
+        return "timetracker-" + key;
+    }
+};
+
+/***/ }),
+
+/***/ 362:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function formatMilliseconds(ms) {
+    ms = ms * .001 | 0;
+    var seconds = ms % 60;
+    var minutes = ms / 60 % 60 | 0;
+    var hours = ms / 60 / 60 | 0;
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    return hours + ":" + minutes + ":" + seconds;
+}
+
+exports.formatMilliseconds = formatMilliseconds;
+
+/***/ }),
+
+/***/ 363:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _react = __webpack_require__(66);
+
+var _react2 = _interopRequireDefault(_react);
+
+var _text = __webpack_require__(362);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+
+var TimeRow = function (_React$Component) {
+    _inherits(TimeRow, _React$Component);
+
+    function TimeRow(props) {
+        _classCallCheck(this, TimeRow);
+
+        var _this = _possibleConstructorReturn(this, (TimeRow.__proto__ || Object.getPrototypeOf(TimeRow)).call(this, props));
+
+        _this.close = _this._close.bind(_this);
+        _this.remove = _this._remove.bind(_this);
+        return _this;
+    }
+
+    _createClass(TimeRow, [{
+        key: 'render',
+        value: function render() {
+            var time = this.props.time;
+            var start = new Date(time.startTs).toLocaleString();
+            var end = new Date(time.endTs).toLocaleString();
+            var diff = time.endTs - time.startTs;
+            var css = time.closed ? 'closed' : '';
+            return _react2.default.createElement(
+                'tr',
+                null,
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement('input', {
+                        type: 'checkbox',
+                        className: 'closer',
+                        checked: time.closed,
+                        onChange: this.close
+                    })
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: css },
+                    start
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: css },
+                    end
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: css + ' m-hidden' },
+                    time.desc
+                ),
+                _react2.default.createElement(
+                    'td',
+                    { className: css },
+                    (0, _text.formatMilliseconds)(diff)
+                ),
+                _react2.default.createElement(
+                    'td',
+                    null,
+                    _react2.default.createElement(
+                        'a',
+                        { href: '#', className: 'clear-btn', title: '\u0423\u0434\u0430\u043B\u0438\u0442\u044C', onClick: this.remove },
+                        _react2.default.createElement('i', { className: 'fa fa-remove' })
+                    )
+                )
+            );
+        }
+    }, {
+        key: '_close',
+        value: function _close(e) {
+            this.props.close(this.props.time.startTs, e.target.checked);
+        }
+    }, {
+        key: '_remove',
+        value: function _remove(e) {
+            e.preventDefault();
+            this.props.remove(this.props.time.startTs);
+        }
+    }]);
+
+    return TimeRow;
+}(_react2.default.Component);
+
+exports.default = TimeRow;
 
 /***/ }),
 

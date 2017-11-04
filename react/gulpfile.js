@@ -2,6 +2,7 @@ var gulp       = require('gulp'),
     gutil      = require('gutil'),
     del        = require('del'),
     jade       = require('gulp-jade'),
+    sass       = require('gulp-sass'),
     rename     = require('gulp-rename'),
     sourcemaps = require('gulp-sourcemaps'),
     compress   = require('gulp-yuicompressor'),
@@ -17,6 +18,7 @@ var HOST   = '127.0.0.1',
     IS_PHP = false; // if you need PHP microfw
 
 var paths = {
+    'sass'   : './sass/**/*.sass',
     'jade'   : './jade/**/*.jade',
     'build'  : '../www'
 };
@@ -57,6 +59,22 @@ gulp.task('jade', function () {
     }
     pipe.pipe(gulp.dest('html'));
 });
+
+gulp.task('sass', function () {
+    var output = DEBUG ? 'expanded' : 'compressed';
+    var pipe = gulp.src(paths.sass);
+    if (DEBUG) {
+        pipe = pipe.pipe(sourcemaps.init());
+    }
+    pipe = pipe.pipe(sass({ // https://github.com/sass/node-sass#includepaths
+        indentWidth : 4,
+        outputStyle : output
+    }).on('error', errHandler));
+    if (DEBUG) {
+        pipe = pipe.pipe(sourcemaps.write());
+    }
+    pipe.pipe(gulp.dest('css'));
+});
  
 gulp.task('py-server', shell.task(['python -m SimpleHTTPServer ' + PORT]));
 gulp.task('php-server', shell.task(['php -S ' + SERVER]));
@@ -65,9 +83,10 @@ gulp.task('browse', shell.task(['start http://' + SERVER + '/html/']));
 
 gulp.task('watch', function () {
     gulp.watch(paths.jade, ['jade']);
+    gulp.watch(paths.sass, ['sass']);
 });
 
-gulp.task('compile', ['jade']);
+gulp.task('compile', ['sass', 'jade']);
 
 /**
  * Development task
