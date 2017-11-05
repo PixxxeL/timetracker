@@ -11,7 +11,7 @@ var paths = {
     'coffee' : './coffee/*.coffee'
 };
 
-var build_path = '../www';
+var build_path = '../../www';
 
 gulp.task('sass', function () {
     gulp.src(paths.sass)

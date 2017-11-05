@@ -1,0 +1,23 @@
+{
+  "name": "timetracker-knockout",
+  "description": "",
+  "main": "index.js",
+  "authors": [
+    "piksel@mail.ru"
+  ],
+  "license": "ISC",
+  "homepage": "https://github.com/PixxxeL/timetracker",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "html5-boilerplate": "^6.0.1",
+    "font-awesome": "^4.7.0",
+    "knockout": "^3.4.2"
+  }
+}

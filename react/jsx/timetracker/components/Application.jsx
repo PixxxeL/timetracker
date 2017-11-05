@@ -39,7 +39,8 @@ class Application extends React.Component {
 
     render() {
         const times = this.state.data[this.state.current];
-        return <div id="content-wrapper">
+        const css = this.state.locked ? 'lock' : '';
+        return <div id="content-wrapper" className={css}>
             <Title
                 changeProject={this.changeProject}
                 addProject={this.addProject}

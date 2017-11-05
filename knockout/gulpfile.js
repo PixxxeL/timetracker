@@ -1,9 +1,12 @@
 var gulp       = require('gulp'),
     gutil      = require('gutil'),
     del        = require('del'),
-    jade       = require('gulp-jade'),
     sass       = require('gulp-sass'),
+    jade       = require('gulp-jade'),
+    coffee     = require('gulp-coffee'),
     rename     = require('gulp-rename'),
+    //replStr    = require('gulp-replace'),
+    //ftp        = require('vinyl-ftp'),
     sourcemaps = require('gulp-sourcemaps'),
     compress   = require('gulp-yuicompressor'),
     concat     = require('gulp-concat'),
@@ -20,18 +23,19 @@ var HOST   = '127.0.0.1',
 var paths = {
     'sass'   : './sass/**/*.sass',
     'jade'   : './jade/**/*.jade',
-    'build'  : '../../www'
+    'coffee' : './coffee/**/*.coffee',
+    'build'  : '../../www' // I'm using ../../build
 };
 
-var separateJsFiles = [
-    'js/polyfill.js',
-    'js/timetracker.js'
-];
+var separateJsFiles = [];
 
 /**
  * Add js files here for compress and concatenate
  */
-var concatenatedJsFiles = [];
+var concatenatedJsFiles = [
+    'js/knockout.debug.js',
+    'js/main.js'
+];
 
 /**
  * Add css files here for compress and concatenate
@@ -45,20 +49,6 @@ var errHandler = function (err) {
     gutil.log('Error', err);
 };
 
-
-gulp.task('jade', function () {
-    var pipe = gulp.src(paths.jade);
-    if (DEBUG) {
-        pipe = pipe.pipe(sourcemaps.init());
-    }
-    pipe = pipe.pipe(jade({
-        pretty: true
-    })).on('error', errHandler);
-    if (DEBUG) {
-        pipe = pipe.pipe(sourcemaps.write());
-    }
-    pipe.pipe(gulp.dest('html'));
-});
 
 gulp.task('sass', function () {
     var output = DEBUG ? 'expanded' : 'compressed';
@@ -75,6 +65,34 @@ gulp.task('sass', function () {
     }
     pipe.pipe(gulp.dest('css'));
 });
+
+gulp.task('coffee', function () {
+    var pipe = gulp.src(paths.coffee);
+    if (DEBUG) {
+        pipe = pipe.pipe(sourcemaps.init());
+    }
+    pipe = pipe.pipe(coffee({
+        bare: true
+    })).on('error', errHandler);
+    if (DEBUG) {
+        pipe = pipe.pipe(sourcemaps.write());
+    }
+    pipe.pipe(gulp.dest('js'));
+});
+
+gulp.task('jade', function () {
+    var pipe = gulp.src(paths.jade);
+    if (DEBUG) {
+        pipe = pipe.pipe(sourcemaps.init());
+    }
+    pipe = pipe.pipe(jade({
+        pretty: true
+    })).on('error', errHandler);
+    if (DEBUG) {
+        pipe = pipe.pipe(sourcemaps.write());
+    }
+    pipe.pipe(gulp.dest('html'));
+});
  
 gulp.task('py-server', shell.task(['python -m SimpleHTTPServer ' + PORT]));
 gulp.task('php-server', shell.task(['php -S ' + SERVER]));
@@ -84,9 +102,10 @@ gulp.task('browse', shell.task(['start http://' + SERVER + '/html/']));
 gulp.task('watch', function () {
     gulp.watch(paths.jade, ['jade']);
     gulp.watch(paths.sass, ['sass']);
+    gulp.watch(paths.coffee, ['coffee']);
 });
 
-gulp.task('compile', ['sass', 'jade']);
+gulp.task('compile', ['jade', 'sass', 'coffee']);
 
 /**
  * Development task
@@ -104,7 +123,8 @@ gulp.task('copy', function () {
     gulp.src('bower_components/font-awesome/css/font-awesome.min.css')
         .pipe(gulp.dest('css'));
     gulp.src('bower_components/font-awesome/fonts/*.*').pipe(gulp.dest('fonts'));
-    gulp.src('../jquery/css/main.css').pipe(gulp.dest('css'));
+    gulp.src('bower_components/knockout/dist/knockout.debug.js')
+        .pipe(gulp.dest('js'));
 });
 
 /**
@@ -133,8 +153,12 @@ gulp.task('static-build', function () {
         .pipe(gulp.dest(paths.build + '/js'));
     gulp.src('html/index.html')
         .pipe(replHtml({
-            'css': '/css/styles.min.css'
+            'css': '/css/styles.min.css',
+            'js' : '/js/app.min.js'
         }))
+        //.pipe(replStr(/"\/js\//g, '"js/'))
+        //.pipe(replStr(/"\/css\//g, '"css/'))
+        //.pipe(replStr(/"[^"]+\/img\//g, '"img/'))
         .pipe(gulp.dest(paths.build + htmlDir));
 });
 
@@ -188,3 +212,20 @@ gulp.task('py-demo', shell.task([
 gulp.task('php-demo', shell.task([
     'cd ' + paths.build + ' && php -S ' + SERVER
 ]));
+
+/**
+ * Deploy through FTP
+ * https://www.npmjs.com/package/vinyl-ftp
+ */
+/*gulp.task('ftp-deploy', function () {
+    var conn = ftp.create({
+        host:     '',
+        user:     '',
+        password: '',
+        parallel: 10,
+        log:      console.log
+    });
+    gulp.src(paths.build + '/**', {base: '.', buffer: false})
+        .pipe(conn.dest(''));
+});
+gulp.task('deploy', ['build', 'ftp-deploy']);*/

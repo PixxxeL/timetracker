@@ -1,0 +1,3 @@
+console.log('knockout');
+
+//# sourceMappingURL=data:application/json;charset=utf8;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoibWFpbi5qcyIsInNvdXJjZXMiOlsibWFpbi5jb2ZmZWUiXSwibmFtZXMiOltdLCJtYXBwaW5ncyI6IkFBQ0EsT0FBTyxDQUFDLEdBQVIsQ0FBWSxVQUFaIiwic291cmNlc0NvbnRlbnQiOlsiXG5jb25zb2xlLmxvZyAna25vY2tvdXQnXG4iXX0=
