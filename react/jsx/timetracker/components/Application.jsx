@@ -14,14 +14,16 @@ class Application extends React.Component {
             current : 'Default',
             data : {
                 'Default' : []
-            }
+            },
+            locked : false
         };
         this.changeProject = this._changeProject.bind(this);
         this.addProject = this._addProject.bind(this);
         this.removeProject = this._removeProject.bind(this);
-        this.setNewDate = this._setNewDate.bind(this);
         this.closeTime = this._closeTime.bind(this);
         this.removeTime = this._removeTime.bind(this);
+        this.newTimeItem = this._newTimeItem.bind(this);
+        this.lock = this._lock.bind(this);
     }
 
     componentWillMount() {
@@ -29,17 +31,14 @@ class Application extends React.Component {
     }
 
     componentWillUpdate(nextProps, nextState) {
-        let term1 = nextState.current != this.state.current,
-            term2 = JSON.stringify(this.state.data) != JSON.stringify(nextState.data);
-        if (term1 || term2) {
-            storage.set('data', {
-                current : nextState.current,
-                data : nextState.data
-            });
-        }
+        storage.set('data', {
+            current : nextState.current,
+            data : nextState.data
+        });
     }
 
     render() {
+        const times = this.state.data[this.state.current];
         return <div id="content-wrapper">
             <Title
                 changeProject={this.changeProject}
@@ -48,22 +47,29 @@ class Application extends React.Component {
                 {...this.state}
             />
             <Timer
-                setNewDate={this.setNewDate}
-                {...this.state}
+                newTimeItem={this.newTimeItem}
+                lock={this.lock}
+                times={times}
             />
             <Times
                 close={this.closeTime}
                 remove={this.removeTime}
-                {...this.state}
+                times={times}
             />
         </div>;
     }
 
+    _lock(lock) {
+        this.setState({
+            locked : lock
+        });
+    }
+
     _addProject(e) {
         e.preventDefault();
-        //if (this.state.startDate) {
-        //    return window.alert('Нельзя добавить проект пока работает таймер');
-        //}
+        if (this.state.locked) {
+            return window.alert('Нельзя добавить проект пока работает таймер');
+        }
         let title = window.prompt('Введите название нового проекта:').trim();
         if (!title) {
             return window.alert('Вы не ввели название проекта');
@@ -81,9 +87,9 @@ class Application extends React.Component {
 
     _removeProject(e) {
         e.preventDefault();
-        //if (this.state.startDate) {
-        //    return window.alert('Нельзя удалить проект пока работает таймер');
-        //}
+        if (this.state.locked) {
+            return window.alert('Нельзя удалить проект пока работает таймер');
+        }
         if (window.confirm('Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?')) {
             if (this.state.current == 'Default') {
                 return window.alert('Нельзя удалить проект `Default`');
@@ -98,25 +104,18 @@ class Application extends React.Component {
     }
 
     _changeProject(e) {
+        if (this.state.locked) {
+            return window.alert('Нельзя сменить проект пока работает таймер');
+        }
         this.setState({
             current : e.target.value
         });
     }
 
-    _setNewDate(timeItem, startTs, insert=false) {
-        const times = this.state.data[this.state.current];
-        if (insert) {
-           times.unshift(timeItem);
-        } else {
-           times[times.findIndex(time => time.startTs == startTs)] = timeItem;
-        }
-        this.setState({
-            data : this.state.data
-        });
-    }
-
     _closeTime(startTs, closed) {
-        //'Нельзя учесть пока работает таймер'
+        if (this.state.locked) {
+            return window.alert('Нельзя учесть пока работает таймер');
+        }
         const times = this.state.data[this.state.current];
         const time = times.find(time => time.startTs == startTs);
         time.closed = closed;
@@ -126,13 +125,28 @@ class Application extends React.Component {
     }
 
     _removeTime(startTs) {
-        //'Нельзя удалить пока работает таймер'
+        if (this.state.locked) {
+            return window.alert('Нельзя удалить пока работает таймер');
+        }
         if (!window.confirm('Действительно хотите удалить\nбез возможности восстановить?')) {
             return;
         }
         const times = this.state.data[this.state.current];
         const idx = times.findIndex(time => time.startTs == startTs);
-        delete times[idx];
+        times.splice(idx, 1);
+        this.setState({
+            data : this.state.data
+        });
+    }
+
+    _newTimeItem(timeItem) {
+        const times = this.state.data[this.state.current];
+        const idx = times.findIndex(time => time.startTs == timeItem.startTs);
+        if (idx < 0) {
+           times.unshift(timeItem);
+        } else {
+           times[idx] = timeItem;
+        }
         this.setState({
             data : this.state.data
         });

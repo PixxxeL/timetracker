@@ -23,7 +23,7 @@ class Title extends React.Component {
     }
 
     render() {
-        const titles = this._getTitles(this.props);
+        const titles = Object.keys(this.props.data || {});
         return <div className="title-container">
             <div className="buttons">
                 {
@@ -72,13 +72,6 @@ class Title extends React.Component {
                 <span className="project-name"> — {this.props.current}</span>
             </h1>
         </div>
-    }
-
-    _getTitles(props) {
-        if (!props.data || !props.data.Default) {
-            return [];
-        }
-        return Object.keys(props.data);
     }
 
     _selectProject(e) {

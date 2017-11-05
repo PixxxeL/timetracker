@@ -13,8 +13,8 @@ class TimeRow extends React.Component {
 
     render() {
         const time = this.props.time;
-        const start = new Date(time.startTs).toLocaleString();
-        const end = new Date(time.endTs).toLocaleString();
+        const start = new Date(time.startTs).toLocaleString('ru-RU');
+        const end = new Date(time.endTs).toLocaleString('ru-RU');
         const diff = time.endTs - time.startTs;
         let css = time.closed ? 'closed' : '';
         return <tr>

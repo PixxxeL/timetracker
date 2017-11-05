@@ -60,26 +60,26 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 132);
+/******/ 	return __webpack_require__(__webpack_require__.s = 133);
 /******/ })
 /************************************************************************/
 /******/ ({
 
-/***/ 132:
+/***/ 133:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
 
 
-var _react = __webpack_require__(66);
+var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _reactDom = __webpack_require__(135);
+var _reactDom = __webpack_require__(136);
 
 var _reactDom2 = _interopRequireDefault(_reactDom);
 
-var _Application = __webpack_require__(154);
+var _Application = __webpack_require__(155);
 
 var _Application2 = _interopRequireDefault(_Application);
 
@@ -91,7 +91,7 @@ _reactDom2.default.render(_react2.default.createElement(_Application2.default, c
 
 /***/ }),
 
-/***/ 133:
+/***/ 134:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -111,11 +111,11 @@ if (true) {
 
 'use strict';
 
-var objectAssign$1 = __webpack_require__(134);
-var require$$0 = __webpack_require__(50);
+var objectAssign$1 = __webpack_require__(135);
+var require$$0 = __webpack_require__(51);
 var emptyObject = __webpack_require__(94);
-var invariant = __webpack_require__(51);
-var emptyFunction = __webpack_require__(46);
+var invariant = __webpack_require__(52);
+var emptyFunction = __webpack_require__(47);
 var checkPropTypes = __webpack_require__(67);
 
 /**
@@ -1797,7 +1797,7 @@ module.exports = ReactEntry;
 
 /***/ }),
 
-/***/ 134:
+/***/ 135:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1895,7 +1895,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 135:
+/***/ 136:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1935,13 +1935,13 @@ if (false) {
   checkDCE();
   module.exports = require('./cjs/react-dom.production.min.js');
 } else {
-  module.exports = __webpack_require__(136);
+  module.exports = __webpack_require__(137);
 }
 
 
 /***/ }),
 
-/***/ 136:
+/***/ 137:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -1961,23 +1961,23 @@ if (true) {
 
 'use strict';
 
-var react = __webpack_require__(66);
-var invariant = __webpack_require__(51);
+var react = __webpack_require__(31);
+var invariant = __webpack_require__(52);
 var ExecutionEnvironment = __webpack_require__(96);
-var _assign = __webpack_require__(137);
-var EventListener = __webpack_require__(138);
-var require$$0 = __webpack_require__(50);
-var hyphenateStyleName = __webpack_require__(139);
-var emptyFunction = __webpack_require__(46);
-var camelizeStyleName = __webpack_require__(141);
-var performanceNow = __webpack_require__(143);
-var propTypes = __webpack_require__(145);
+var _assign = __webpack_require__(138);
+var EventListener = __webpack_require__(139);
+var require$$0 = __webpack_require__(51);
+var hyphenateStyleName = __webpack_require__(140);
+var emptyFunction = __webpack_require__(47);
+var camelizeStyleName = __webpack_require__(142);
+var performanceNow = __webpack_require__(144);
+var propTypes = __webpack_require__(146);
 var emptyObject = __webpack_require__(94);
 var checkPropTypes = __webpack_require__(67);
-var shallowEqual = __webpack_require__(148);
-var containsNode = __webpack_require__(149);
-var focusNode = __webpack_require__(152);
-var getActiveElement = __webpack_require__(153);
+var shallowEqual = __webpack_require__(149);
+var containsNode = __webpack_require__(150);
+var focusNode = __webpack_require__(153);
+var getActiveElement = __webpack_require__(154);
 
 /**
  * Copyright (c) 2013-present, Facebook, Inc.
@@ -19170,7 +19170,7 @@ module.exports = ReactDOMFiberEntry;
 
 /***/ }),
 
-/***/ 137:
+/***/ 138:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19268,7 +19268,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 138:
+/***/ 139:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19283,7 +19283,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
  * @typechecks
  */
 
-var emptyFunction = __webpack_require__(46);
+var emptyFunction = __webpack_require__(47);
 
 /**
  * Upstream version of event listener. Does not take into account specific
@@ -19349,7 +19349,7 @@ module.exports = EventListener;
 
 /***/ }),
 
-/***/ 139:
+/***/ 140:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19364,7 +19364,7 @@ module.exports = EventListener;
 
 
 
-var hyphenate = __webpack_require__(140);
+var hyphenate = __webpack_require__(141);
 
 var msPattern = /^ms-/;
 
@@ -19392,7 +19392,7 @@ module.exports = hyphenateStyleName;
 
 /***/ }),
 
-/***/ 140:
+/***/ 141:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19429,7 +19429,7 @@ module.exports = hyphenate;
 
 /***/ }),
 
-/***/ 141:
+/***/ 142:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19444,7 +19444,7 @@ module.exports = hyphenate;
 
 
 
-var camelize = __webpack_require__(142);
+var camelize = __webpack_require__(143);
 
 var msPattern = /^-ms-/;
 
@@ -19473,7 +19473,7 @@ module.exports = camelizeStyleName;
 
 /***/ }),
 
-/***/ 142:
+/***/ 143:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19509,7 +19509,7 @@ module.exports = camelize;
 
 /***/ }),
 
-/***/ 143:
+/***/ 144:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19524,7 +19524,7 @@ module.exports = camelize;
  * @typechecks
  */
 
-var performance = __webpack_require__(144);
+var performance = __webpack_require__(145);
 
 var performanceNow;
 
@@ -19547,7 +19547,7 @@ module.exports = performanceNow;
 
 /***/ }),
 
-/***/ 144:
+/***/ 145:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19574,7 +19574,7 @@ module.exports = performance || {};
 
 /***/ }),
 
-/***/ 145:
+/***/ 146:
 /***/ (function(module, exports, __webpack_require__) {
 
 /**
@@ -19599,7 +19599,7 @@ if (true) {
   // By explicitly using `prop-types` you are opting into new development behavior.
   // http://fb.me/prop-types-in-prod
   var throwOnDirectAccess = true;
-  module.exports = __webpack_require__(146)(isValidElement, throwOnDirectAccess);
+  module.exports = __webpack_require__(147)(isValidElement, throwOnDirectAccess);
 } else {
   // By explicitly using `prop-types` you are opting into new production behavior.
   // http://fb.me/prop-types-in-prod
@@ -19609,7 +19609,7 @@ if (true) {
 
 /***/ }),
 
-/***/ 146:
+/***/ 147:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -19622,10 +19622,10 @@ if (true) {
 
 
 
-var emptyFunction = __webpack_require__(46);
-var invariant = __webpack_require__(51);
-var warning = __webpack_require__(50);
-var assign = __webpack_require__(147);
+var emptyFunction = __webpack_require__(47);
+var invariant = __webpack_require__(52);
+var warning = __webpack_require__(51);
+var assign = __webpack_require__(148);
 
 var ReactPropTypesSecret = __webpack_require__(95);
 var checkPropTypes = __webpack_require__(67);
@@ -20159,7 +20159,7 @@ module.exports = function(isValidElement, throwOnDirectAccess) {
 
 /***/ }),
 
-/***/ 147:
+/***/ 148:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20257,7 +20257,7 @@ module.exports = shouldUseNative() ? Object.assign : function (target, source) {
 
 /***/ }),
 
-/***/ 148:
+/***/ 149:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20329,7 +20329,7 @@ module.exports = shallowEqual;
 
 /***/ }),
 
-/***/ 149:
+/***/ 150:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20344,7 +20344,7 @@ module.exports = shallowEqual;
  * 
  */
 
-var isTextNode = __webpack_require__(150);
+var isTextNode = __webpack_require__(151);
 
 /*eslint-disable no-bitwise */
 
@@ -20373,7 +20373,7 @@ module.exports = containsNode;
 
 /***/ }),
 
-/***/ 150:
+/***/ 151:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20388,7 +20388,7 @@ module.exports = containsNode;
  * @typechecks
  */
 
-var isNode = __webpack_require__(151);
+var isNode = __webpack_require__(152);
 
 /**
  * @param {*} object The object to check.
@@ -20402,7 +20402,7 @@ module.exports = isTextNode;
 
 /***/ }),
 
-/***/ 151:
+/***/ 152:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20431,7 +20431,7 @@ module.exports = isNode;
 
 /***/ }),
 
-/***/ 152:
+/***/ 153:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20462,7 +20462,7 @@ module.exports = focusNode;
 
 /***/ }),
 
-/***/ 153:
+/***/ 154:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20505,7 +20505,7 @@ module.exports = getActiveElement;
 
 /***/ }),
 
-/***/ 154:
+/***/ 155:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20519,23 +20519,23 @@ var _extends = Object.assign || function (target) { for (var i = 1; i < argument
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(66);
+var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _localStorage = __webpack_require__(361);
+var _localStorage = __webpack_require__(156);
 
 var _localStorage2 = _interopRequireDefault(_localStorage);
 
-var _Title = __webpack_require__(358);
+var _Title = __webpack_require__(157);
 
 var _Title2 = _interopRequireDefault(_Title);
 
-var _Timer = __webpack_require__(359);
+var _Timer = __webpack_require__(158);
 
 var _Timer2 = _interopRequireDefault(_Timer);
 
-var _Times = __webpack_require__(360);
+var _Times = __webpack_require__(159);
 
 var _Times2 = _interopRequireDefault(_Times);
 
@@ -20559,14 +20559,16 @@ var Application = function (_React$Component) {
             current: 'Default',
             data: {
                 'Default': []
-            }
+            },
+            locked: false
         };
         _this.changeProject = _this._changeProject.bind(_this);
         _this.addProject = _this._addProject.bind(_this);
         _this.removeProject = _this._removeProject.bind(_this);
-        _this.setNewDate = _this._setNewDate.bind(_this);
         _this.closeTime = _this._closeTime.bind(_this);
         _this.removeTime = _this._removeTime.bind(_this);
+        _this.newTimeItem = _this._newTimeItem.bind(_this);
+        _this.lock = _this._lock.bind(_this);
         return _this;
     }
 
@@ -20578,18 +20580,15 @@ var Application = function (_React$Component) {
     }, {
         key: 'componentWillUpdate',
         value: function componentWillUpdate(nextProps, nextState) {
-            var term1 = nextState.current != this.state.current,
-                term2 = JSON.stringify(this.state.data) != JSON.stringify(nextState.data);
-            if (term1 || term2) {
-                _localStorage2.default.set('data', {
-                    current: nextState.current,
-                    data: nextState.data
-                });
-            }
+            _localStorage2.default.set('data', {
+                current: nextState.current,
+                data: nextState.data
+            });
         }
     }, {
         key: 'render',
         value: function render() {
+            var times = this.state.data[this.state.current];
             return _react2.default.createElement(
                 'div',
                 { id: 'content-wrapper' },
@@ -20598,22 +20597,32 @@ var Application = function (_React$Component) {
                     addProject: this.addProject,
                     removeProject: this.removeProject
                 }, this.state)),
-                _react2.default.createElement(_Timer2.default, _extends({
-                    setNewDate: this.setNewDate
-                }, this.state)),
-                _react2.default.createElement(_Times2.default, _extends({
+                _react2.default.createElement(_Timer2.default, {
+                    newTimeItem: this.newTimeItem,
+                    lock: this.lock,
+                    times: times
+                }),
+                _react2.default.createElement(_Times2.default, {
                     close: this.closeTime,
-                    remove: this.removeTime
-                }, this.state))
+                    remove: this.removeTime,
+                    times: times
+                })
             );
+        }
+    }, {
+        key: '_lock',
+        value: function _lock(lock) {
+            this.setState({
+                locked: lock
+            });
         }
     }, {
         key: '_addProject',
         value: function _addProject(e) {
             e.preventDefault();
-            //if (this.state.startDate) {
-            //    return window.alert('Нельзя добавить проект пока работает таймер');
-            //}
+            if (this.state.locked) {
+                return window.alert('Нельзя добавить проект пока работает таймер');
+            }
             var title = window.prompt('Введите название нового проекта:').trim();
             if (!title) {
                 return window.alert('Вы не ввели название проекта');
@@ -20632,9 +20641,9 @@ var Application = function (_React$Component) {
         key: '_removeProject',
         value: function _removeProject(e) {
             e.preventDefault();
-            //if (this.state.startDate) {
-            //    return window.alert('Нельзя удалить проект пока работает таймер');
-            //}
+            if (this.state.locked) {
+                return window.alert('Нельзя удалить проект пока работает таймер');
+            }
             if (window.confirm('Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?')) {
                 if (this.state.current == 'Default') {
                     return window.alert('Нельзя удалить проект `Default`');
@@ -20650,31 +20659,19 @@ var Application = function (_React$Component) {
     }, {
         key: '_changeProject',
         value: function _changeProject(e) {
+            if (this.state.locked) {
+                return window.alert('Нельзя сменить проект пока работает таймер');
+            }
             this.setState({
                 current: e.target.value
             });
         }
     }, {
-        key: '_setNewDate',
-        value: function _setNewDate(timeItem, startTs) {
-            var insert = arguments.length > 2 && arguments[2] !== undefined ? arguments[2] : false;
-
-            var times = this.state.data[this.state.current];
-            if (insert) {
-                times.unshift(timeItem);
-            } else {
-                times[times.findIndex(function (time) {
-                    return time.startTs == startTs;
-                })] = timeItem;
-            }
-            this.setState({
-                data: this.state.data
-            });
-        }
-    }, {
         key: '_closeTime',
         value: function _closeTime(startTs, closed) {
-            //'Нельзя учесть пока работает таймер'
+            if (this.state.locked) {
+                return window.alert('Нельзя учесть пока работает таймер');
+            }
             var times = this.state.data[this.state.current];
             var time = times.find(function (time) {
                 return time.startTs == startTs;
@@ -20687,7 +20684,9 @@ var Application = function (_React$Component) {
     }, {
         key: '_removeTime',
         value: function _removeTime(startTs) {
-            //'Нельзя удалить пока работает таймер'
+            if (this.state.locked) {
+                return window.alert('Нельзя удалить пока работает таймер');
+            }
             if (!window.confirm('Действительно хотите удалить\nбез возможности восстановить?')) {
                 return;
             }
@@ -20695,7 +20694,23 @@ var Application = function (_React$Component) {
             var idx = times.findIndex(function (time) {
                 return time.startTs == startTs;
             });
-            delete times[idx];
+            times.splice(idx, 1);
+            this.setState({
+                data: this.state.data
+            });
+        }
+    }, {
+        key: '_newTimeItem',
+        value: function _newTimeItem(timeItem) {
+            var times = this.state.data[this.state.current];
+            var idx = times.findIndex(function (time) {
+                return time.startTs == timeItem.startTs;
+            });
+            if (idx < 0) {
+                times.unshift(timeItem);
+            } else {
+                times[idx] = timeItem;
+            }
             this.setState({
                 data: this.state.data
             });
@@ -20711,7 +20726,48 @@ exports.default = Application;
 
 /***/ }),
 
-/***/ 358:
+/***/ 156:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+exports.default = {
+
+    /**
+     * 
+     */
+    get: function get(key) {
+        try {
+            return JSON.parse(window.localStorage.getItem(this._getStorageKey(key)));
+        } catch (err) {}
+    },
+
+
+    /**
+     * 
+     */
+    set: function set(key, data) {
+        try {
+            window.localStorage.setItem(this._getStorageKey(key), JSON.stringify(data));
+        } catch (err) {}
+    },
+
+
+    /**
+     * 
+     */
+    _getStorageKey: function _getStorageKey(key) {
+        return "timetracker-" + key;
+    }
+};
+
+/***/ }),
+
+/***/ 157:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20723,7 +20779,7 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(66);
+var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
@@ -20766,7 +20822,7 @@ var Title = function (_React$Component) {
     }, {
         key: 'render',
         value: function render() {
-            var titles = this._getTitles(this.props);
+            var titles = Object.keys(this.props.data || {});
             return _react2.default.createElement(
                 'div',
                 { className: 'title-container' },
@@ -20834,14 +20890,6 @@ var Title = function (_React$Component) {
             );
         }
     }, {
-        key: '_getTitles',
-        value: function _getTitles(props) {
-            if (!props.data || !props.data.Default) {
-                return [];
-            }
-            return Object.keys(props.data);
-        }
-    }, {
         key: '_selectProject',
         value: function _selectProject(e) {
             e.preventDefault();
@@ -20883,7 +20931,7 @@ exports.default = Title;
 
 /***/ }),
 
-/***/ 359:
+/***/ 158:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -20895,11 +20943,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(66);
+var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _text = __webpack_require__(362);
+var _text = __webpack_require__(97);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -20918,11 +20966,10 @@ var Timer = function (_React$Component) {
         var _this = _possibleConstructorReturn(this, (Timer.__proto__ || Object.getPrototypeOf(Timer)).call(this, props));
 
         _this.state = {
-            startDate: null,
+            newTime: null,
             diff: 0
         };
         _this.loopCounter = 0;
-        _this.curDesc = '';
         _this.toggle = _this._toggle.bind(_this);
         _this._renderFrame = _this._renderFrame.bind(_this);
         return _this;
@@ -20931,7 +20978,16 @@ var Timer = function (_React$Component) {
     _createClass(Timer, [{
         key: 'render',
         value: function render() {
-            var css = this.state.startDate ? 'fa fa-pause' : 'fa fa-play';
+            var css = this.state.newTime ? 'fa fa-pause' : 'fa fa-play';
+            var total = 0,
+                closed = 0;
+            this.props.times.forEach(function (time) {
+                var diff = time.endTs - time.startTs;
+                total += diff;
+                if (time.closed) {
+                    closed += diff;
+                }
+            });
             return _react2.default.createElement(
                 'div',
                 { className: 'timer-container' },
@@ -20952,14 +21008,14 @@ var Timer = function (_React$Component) {
                     _react2.default.createElement(
                         'span',
                         { className: 'total value' },
-                        '0:00:00'
+                        (0, _text.formatMilliseconds)(total)
                     ),
                     _react2.default.createElement('br', null),
                     '\u043D\u0435 \u0443\u0447\u0442\u0435\u043D\u043D\u043E\u0433\u043E: ',
                     _react2.default.createElement(
                         'span',
                         { className: 'opened value' },
-                        '0:00:00'
+                        (0, _text.formatMilliseconds)(closed)
                     )
                 )
             );
@@ -20967,52 +21023,46 @@ var Timer = function (_React$Component) {
     }, {
         key: '_toggle',
         value: function _toggle(e) {
-            var _this2 = this;
-
             e.preventDefault();
-            var startDate = null,
-                insertTime = false;
-            if (!this.state.startDate) {
-                startDate = new Date();
-                insertTime = true;
+            var newTime = null;
+            if (this.state.newTime) {
+                this.props.newTimeItem(this.state.newTime);
+                this.props.lock(false);
+            } else {
                 this.loopCounter = 0;
-                this.curDesc = window.prompt('Можете ввести пояснение:', '').trim();
+                var now = new Date().getTime();
+                newTime = {
+                    startTs: now,
+                    endTs: now,
+                    desc: window.prompt('Можете ввести пояснение:', '').trim(),
+                    closed: false
+                };
+                this.props.newTimeItem(newTime);
+                this.props.lock(true);
                 window.requestAnimationFrame(this._renderFrame);
             }
             this.setState({
-                startDate: startDate
-            }, function () {
-                _this2._saveTimer(insertTime);
+                newTime: newTime,
+                diff: 0
             });
         }
     }, {
         key: '_renderFrame',
         value: function _renderFrame() {
-            if (this.state.startDate) {
-                var diff = new Date().getTime() - this.state.startDate.getTime();
-                this.setState({
-                    diff: diff
-                });
-                if (++this.loopCounter % 100 === 0) {
-                    // per 5 seconds
-                    this._saveTimer();
-                }
-                window.requestAnimationFrame(this._renderFrame);
+            if (!this.state.newTime) {
+                return;
             }
-        }
-    }, {
-        key: '_saveTimer',
-        value: function _saveTimer() {
-            /*const startTs = this.state.startDate.getTime();
-            const timeItem = {
-                startTs : startTs,
-                endTs : new Date().getTime(),
-                desc : this.curDesc,
-                closed : false
-            };
-            this.props.setNewDate(timeItem, startTs, insert);*/
-
-            var insert = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : false;
+            var newTime = this.state.newTime;
+            newTime.endTs = new Date().getTime();
+            this.setState({
+                diff: newTime.endTs - newTime.startTs,
+                newTime: newTime
+            });
+            if (++this.loopCounter % 30 === 0) {
+                // per 0.5 seconds
+                this.props.newTimeItem(newTime);
+            }
+            window.requestAnimationFrame(this._renderFrame);
         }
     }]);
 
@@ -21023,7 +21073,7 @@ exports.default = Timer;
 
 /***/ }),
 
-/***/ 360:
+/***/ 159:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21035,11 +21085,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(66);
+var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _TimeRow = __webpack_require__(363);
+var _TimeRow = __webpack_require__(160);
 
 var _TimeRow2 = _interopRequireDefault(_TimeRow);
 
@@ -21065,7 +21115,7 @@ var Times = function (_React$Component) {
         value: function render() {
             var _this2 = this;
 
-            var times = this.props.data[this.props.current];
+            var times = this.props.times;
             return _react2.default.createElement(
                 'div',
                 { className: 'times' },
@@ -21134,75 +21184,7 @@ exports.default = Times;
 
 /***/ }),
 
-/***/ 361:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-exports.default = {
-
-    /**
-     * 
-     */
-    get: function get(key) {
-        try {
-            return JSON.parse(window.localStorage.getItem(this._getStorageKey(key)));
-        } catch (err) {}
-    },
-
-
-    /**
-     * 
-     */
-    set: function set(key, data) {
-        try {
-            window.localStorage.setItem(this._getStorageKey(key), JSON.stringify(data));
-        } catch (err) {}
-    },
-
-
-    /**
-     * 
-     */
-    _getStorageKey: function _getStorageKey(key) {
-        return "timetracker-" + key;
-    }
-};
-
-/***/ }),
-
-/***/ 362:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-    value: true
-});
-function formatMilliseconds(ms) {
-    ms = ms * .001 | 0;
-    var seconds = ms % 60;
-    var minutes = ms / 60 % 60 | 0;
-    var hours = ms / 60 / 60 | 0;
-    if (seconds < 10) {
-        seconds = "0" + seconds;
-    }
-    if (minutes < 10) {
-        minutes = "0" + minutes;
-    }
-    return hours + ":" + minutes + ":" + seconds;
-}
-
-exports.formatMilliseconds = formatMilliseconds;
-
-/***/ }),
-
-/***/ 363:
+/***/ 160:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21214,11 +21196,11 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _react = __webpack_require__(66);
+var _react = __webpack_require__(31);
 
 var _react2 = _interopRequireDefault(_react);
 
-var _text = __webpack_require__(362);
+var _text = __webpack_require__(97);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -21245,8 +21227,8 @@ var TimeRow = function (_React$Component) {
         key: 'render',
         value: function render() {
             var time = this.props.time;
-            var start = new Date(time.startTs).toLocaleString();
-            var end = new Date(time.endTs).toLocaleString();
+            var start = new Date(time.startTs).toLocaleString('ru-RU');
+            var end = new Date(time.endTs).toLocaleString('ru-RU');
             var diff = time.endTs - time.startTs;
             var css = time.closed ? 'closed' : '';
             return _react2.default.createElement(
@@ -21313,7 +21295,22 @@ exports.default = TimeRow;
 
 /***/ }),
 
-/***/ 46:
+/***/ 31:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+if (false) {
+  module.exports = require('./cjs/react.production.min.js');
+} else {
+  module.exports = __webpack_require__(134);
+}
+
+
+/***/ }),
+
+/***/ 47:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21356,7 +21353,7 @@ module.exports = emptyFunction;
 
 /***/ }),
 
-/***/ 50:
+/***/ 51:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21370,7 +21367,7 @@ module.exports = emptyFunction;
 
 
 
-var emptyFunction = __webpack_require__(46);
+var emptyFunction = __webpack_require__(47);
 
 /**
  * Similar to invariant but only logs a warning if the condition is not met.
@@ -21425,7 +21422,7 @@ module.exports = warning;
 
 /***/ }),
 
-/***/ 51:
+/***/ 52:
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -21485,21 +21482,6 @@ module.exports = invariant;
 
 /***/ }),
 
-/***/ 66:
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-if (false) {
-  module.exports = require('./cjs/react.production.min.js');
-} else {
-  module.exports = __webpack_require__(133);
-}
-
-
-/***/ }),
-
 /***/ 67:
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -21514,8 +21496,8 @@ if (false) {
 
 
 if (true) {
-  var invariant = __webpack_require__(51);
-  var warning = __webpack_require__(50);
+  var invariant = __webpack_require__(52);
+  var warning = __webpack_require__(51);
   var ReactPropTypesSecret = __webpack_require__(95);
   var loggedTypeFailures = {};
 }
@@ -21648,6 +21630,33 @@ var ExecutionEnvironment = {
 };
 
 module.exports = ExecutionEnvironment;
+
+/***/ }),
+
+/***/ 97:
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+    value: true
+});
+function formatMilliseconds(ms) {
+    ms = ms * .001 | 0;
+    var seconds = ms % 60;
+    var minutes = ms / 60 % 60 | 0;
+    var hours = ms / 60 / 60 | 0;
+    if (seconds < 10) {
+        seconds = "0" + seconds;
+    }
+    if (minutes < 10) {
+        minutes = "0" + minutes;
+    }
+    return hours + ":" + minutes + ":" + seconds;
+}
+
+exports.formatMilliseconds = formatMilliseconds;
 
 /***/ })
 

@@ -6,7 +6,7 @@ import TimeRow from './TimeRow.jsx'
 class Times extends React.Component {
 
     render() {
-        const times = this.props.data[this.props.current];
+        const times = this.props.times;
         return <div className="times">
             {
                 times.length ?
