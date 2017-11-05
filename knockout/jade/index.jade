@@ -4,12 +4,12 @@ block content
     #content-wrapper
         .title-container
             .buttons
-                select.select-project
-                a.swap-project(href="#" title="Сменить проект")
+                select.select-project(data-bind="visible: isSelectProject, options: titles, value: current, click: selectProjectClick" autocomplete="off")
+                a.swap-project(data-bind="click: toggleSelectProject" href="#" title="Сменить проект")
                     i.fa.fa-list
-                a.add-project(href="#" title="Добавить проект")
+                a.add-project(data-bind="click: addProject" href="#" title="Добавить проект")
                     i.fa.fa-plus
-                a.remove-project(href="#" title="Удалить проект")
+                a.remove-project(data-bind="click: removeProject" href="#" title="Удалить проект")
                     i.fa.fa-minus
             h1
                 | Time Tracker
