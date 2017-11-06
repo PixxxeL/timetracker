@@ -1,10 +1,10 @@
 extends base.jade
 
 block content
-    #content-wrapper
+    #content-wrapper(data-bind="css: {'lock' : newTime() !== null}")
         .title-container
             .buttons
-                select.select-project(data-bind="visible: isSelectProject, options: titles, value: current, click: selectProjectClick" autocomplete="off")
+                select.select-project(data-bind="visible: isSelectProject, options: titles, value: current, click: selectProjectClick, event: { change: selectProjectChange }, enable: newTime() === null" autocomplete="off")
                 a.swap-project(data-bind="click: toggleSelectProject, visible: isToggleProject" href="#" title="Сменить проект")
                     i.fa.fa-list
                 a.add-project(data-bind="click: addProject" href="#" title="Добавить проект")
@@ -16,7 +16,7 @@ block content
                 span.project-name(data-bind="text: ' — ' + current()")
         .timer-container
             a.btn(data-bind="click: toggleTimer" href="#" title="Таймер")
-                i.fa.fa-play
+                i.fa(data-bind="css: {'fa-pause' : newTime() !== null, 'fa-play' : newTime() === null}")
             a.label(data-bind="click: toggleTimer, text: formatMilliseconds(diff())" href="#" title="Таймер")
             .total-time
                 | Всего времени в проекте: 
@@ -46,5 +46,5 @@ block content
             td(data-bind="text: desc, css: {'closed' : closed, 'm-hidden' : true}")
             td(data-bind="text: diff, css: {'closed' : closed}")
             td
-                a(href="#" class="clear-btn" title="Удалить")
+                a(data-bind="click: remove" href="#" class="clear-btn" title="Удалить")
                     i(class="fa fa-remove")

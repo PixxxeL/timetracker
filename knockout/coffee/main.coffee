@@ -5,7 +5,9 @@ TIMETRACKER = {
     }
     Data : {
         current : 'Default'
-        data : []
+        data : {
+            'Default' : []
+        }
     }
 }
 
@@ -24,7 +26,8 @@ formatMilliseconds = (ms) ->
 
 TIMETRACKER.AppViewModel = ->
     self = @
-    self.data = ko.observableArray TIMETRACKER.Data.data
+    self.loopCounter = 0
+    self.data = ko.observable TIMETRACKER.Data.data
     self.titles = ko.computed ->
         _.keys self.data()
     self.current = ko.observable TIMETRACKER.Data.current
@@ -42,15 +45,10 @@ TIMETRACKER.AppViewModel = ->
         , 0
     self.closedTime = ko.computed ->
         _.reduce self.currentTimes(), (memo, time) ->
-            diff = if time.closed then time.endTs - time.startTs else 0
+            diff = if time.closed then 0 else time.endTs - time.startTs
             memo + diff
         , 0
-
-    self.current.subscribe ->
-        self.save()
-
-    self.data.subscribe ->
-        self.save()
+    self.newTime = ko.observable null
 
     load = ->
         data = window.localStorage.getItem TIMETRACKER.Settings.dataStorageKey
@@ -60,12 +58,12 @@ TIMETRACKER.AppViewModel = ->
             self.current data.current
         null
 
-    self.save = ->
+    save = ->
         data = JSON.stringify {
             current : self.current()
             data : self.data()
         }
-        console.log 'save', data
+        #console.log 'save', data
         window.localStorage.setItem TIMETRACKER.Settings.dataStorageKey, data
         null
 
@@ -77,11 +75,33 @@ TIMETRACKER.AppViewModel = ->
                 self.isSelectProject false
         null
 
+    renderFrame = ->
+        if self.newTime() is null
+            return
+        self.newTime().endTs = new Date().getTime()
+        self.diff(self.newTime().endTs - self.newTime().startTs)
+        self.loopCounter += 1
+        if self.loopCounter % 30 is 0 # per 0.5 seconds
+            newTimeSave()
+        window.requestAnimationFrame renderFrame
+
+    newTimeSave = ->
+        times = self.currentTimes()
+        idx = _.findIndex times, (time) -> time.startTs == self.newTime().startTs
+        if idx < 0
+            times.unshift self.newTime()
+        else
+            times[idx] = self.newTime()
+        save()
+        load()
+
     self.formatMilliseconds = formatMilliseconds
 
-    self.selectProjectClick = (data, e) ->
-        e.stopPropagation()
+    self.selectProjectClick = (e) ->
+        e.stopPropagation
         null
+
+    self.selectProjectChange = save
 
     self.toggleSelectProject = ->
         if self.isToggleProject()
@@ -89,8 +109,8 @@ TIMETRACKER.AppViewModel = ->
         null
 
     self.addProject = ->
-        #if startDate
-        #    return alert 'Нельзя добавить проект пока работает таймер'
+        if self.newTime() isnt null
+            return window.alert 'Нельзя добавить проект пока работает таймер'
         title = window.prompt('Введите название нового проекта:', '')
         if title
             title = title.trim()
@@ -104,11 +124,12 @@ TIMETRACKER.AppViewModel = ->
         data[title] = []
         self.data data
         self.current title
+        save()
         null
 
     self.removeProject = ->
-        #if startDate
-        #    return window.alert 'Нельзя удалить проект пока работает таймер'
+        if self.newTime() isnt null
+            return window.alert 'Нельзя удалить проект пока работает таймер'
         if window.confirm 'Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?'
             if self.current() == 'Default'
                 return window.alert 'Нельзя удалить проект `Default`'
@@ -116,9 +137,46 @@ TIMETRACKER.AppViewModel = ->
             delete data[self.current()]
             self.data data
             self.current 'Default'
+            save()
         null
 
     self.toggleTimer = ->
+        if self.newTime() is null
+            self.loopCounter = 0
+            now = new Date().getTime()
+            self.newTime {
+                startTs : now,
+                endTs : now,
+                desc : window.prompt('Можете ввести пояснение:', '').trim(),
+                closed : false
+            };
+            newTimeSave()
+            window.requestAnimationFrame renderFrame
+        else
+            newTimeSave()
+            self.newTime null
+            self.diff 0
+        null
+
+    self.closeTime = (time) ->
+        if self.newTime() isnt null
+            return window.alert 'Нельзя учесть пока работает таймер'
+        _.find self.currentTimes(), (item) ->
+            if item.startTs == time.startTs()
+                item.closed = time.closed()
+                return
+        save()
+        load()
+
+    self.removeTime = (time) ->
+        if self.newTime() isnt null
+            return window.alert 'Нельзя удалить пока работает таймер'
+        if not confirm 'Действительно хотите удалить\nбез возможности восстановить?'
+            return
+        self.data()[self.current()] = _.reject self.currentTimes(), (item) ->
+            item.startTs == time.startTs()
+        save()
+        load()
         null
 
     load()
@@ -141,15 +199,19 @@ TIMETRACKER.TimeViewModel = (params) ->
     self.end = ko.computed ->
         new Date(self.endTs()).toLocaleString('ru-RU')
 
-    self.closed.subscribe app.save
+    self.closed.subscribe ->
+        app.closeTime self
+
+    self.remove = ->
+        app.removeTime self
 
     self
 
 
-ko.components.register('time-row', {
+ko.components.register 'time-row', {
     viewModel: TIMETRACKER.TimeViewModel
     template: { element: 'time-row-tmpl' }
-})
+}
 
 
 window.onload = ->

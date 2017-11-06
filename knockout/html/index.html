@@ -19,14 +19,14 @@
       для улучшенного отображения сайта.
     </p><![endif]-->
     <div id="app-container">
-      <div id="content-wrapper">
+      <div id="content-wrapper" data-bind="css: {'lock' : newTime() !== null}">
         <div class="title-container">
           <div class="buttons">
-            <select data-bind="visible: isSelectProject, options: titles, value: current, click: selectProjectClick" autocomplete="off" class="select-project"></select><a data-bind="click: toggleSelectProject, visible: isToggleProject" href="#" title="Сменить проект" class="swap-project"><i class="fa fa-list"></i></a><a data-bind="click: addProject" href="#" title="Добавить проект" class="add-project"><i class="fa fa-plus"></i></a><a data-bind="click: removeProject" href="#" title="Удалить проект" class="remove-project"><i class="fa fa-minus"></i></a>
+            <select data-bind="visible: isSelectProject, options: titles, value: current, click: selectProjectClick, event: { change: selectProjectChange }, enable: newTime() === null" autocomplete="off" class="select-project"></select><a data-bind="click: toggleSelectProject, visible: isToggleProject" href="#" title="Сменить проект" class="swap-project"><i class="fa fa-list"></i></a><a data-bind="click: addProject" href="#" title="Добавить проект" class="add-project"><i class="fa fa-plus"></i></a><a data-bind="click: removeProject" href="#" title="Удалить проект" class="remove-project"><i class="fa fa-minus"></i></a>
           </div>
           <h1>Time Tracker<span data-bind="text: ' — ' + current()" class="project-name"></span></h1>
         </div>
-        <div class="timer-container"><a data-bind="click: toggleTimer" href="#" title="Таймер" class="btn"><i class="fa fa-play"></i></a><a data-bind="click: toggleTimer, text: formatMilliseconds(diff())" href="#" title="Таймер" class="label"></a>
+        <div class="timer-container"><a data-bind="click: toggleTimer" href="#" title="Таймер" class="btn"><i data-bind="css: {'fa-pause' : newTime() !== null, 'fa-play' : newTime() === null}" class="fa"></i></a><a data-bind="click: toggleTimer, text: formatMilliseconds(diff())" href="#" title="Таймер" class="label"></a>
           <div class="total-time">Всего времени в проекте: <span data-bind="text: formatMilliseconds(totalTime())" class="total value"></span><br>не учтенного: <span data-bind="text: formatMilliseconds(closedTime())" class="opened value"></span></div>
         </div>
         <div class="times">
@@ -55,7 +55,7 @@
           <td data-bind="text: end, css: {'closed' : closed}"></td>
           <td data-bind="text: desc, css: {'closed' : closed, 'm-hidden' : true}"></td>
           <td data-bind="text: diff, css: {'closed' : closed}"></td>
-          <td><a href="#" title="Удалить" class="clear-btn"><i class="fa fa-remove"></i></a></td>
+          <td><a data-bind="click: remove" href="#" title="Удалить" class="clear-btn"><i class="fa fa-remove"></i></a></td>
         </template>
       </div>
     </div>
