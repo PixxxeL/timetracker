@@ -1,24 +1,42 @@
 # Timetracker
 
-Must have Node.js and NPM for jQuery variant
+This is a simple project for track time of working process.
+It's created on some variant of Javascript frameworks:
+[jQuery](https://jquery.com/),
+[Backbone](http://backbonejs.org/) (so far not ready),
+[Knockout](http://knockoutjs.com/),
+[React](https://reactjs.org/)
+with identically functionality.
+For compare them.
 
-For developement jQuery variant:
+Working instance deployed [here](http://tt.pixel-tyumen.ru/).
 
-* Change directory to `jquery` or in repository root
-* Run `npm install -g bower gulp`
+I'm use [my own build environment](https://github.com/PixxxeL/regular-gulpfile)
+based on [Gulp](https://gulpjs.com/).
+
+For developement or deploy you must have
+[Node.js](https://nodejs.org/),
+[NPM](https://www.npmjs.com/),
+[Gulp](https://gulpjs.com/),
+[Bower](https://bower.io/).
+For react variant -- [Webpack](https://webpack.js.org/) also.
+
+## Developement
+
+* Change directory to `jquery` or `backbone` or `knockout` or `react`
+  from repository root
 * Run `bower install`
 * Run `npm install`
 * Run `gulp`
-* In browser type `http://127.0.0.1:8090/html/`
+* Run `webpack` (react variant only)
+* Browse `http://127.0.0.1:8090/html/`
 
-For using jQuery variant:
+## Demo
 
-* Change directory to `jquery` or in repository root
-* Run `npm install -g bower gulp`
-* Run `bower install`
-* Run `npm install`
+* Change directory to `jquery` or `backbone` or `knockout` or `react`
+  from repository root
+* Run `bower install` (if not installing yet)
+* Run `npm install` (if not installing yet)
 * Run `gulp build`
-* Run `gulp demo`
-* In browser type `http://127.0.0.1:8090/`
-
-For React variant must have Webpack also
+* Run `gulp py-demo` (`gulp demo` for jquery variant)
+* Browse `http://127.0.0.1:8090/`
