@@ -5,7 +5,7 @@ block content
         .title-container
             .buttons
                 select.select-project(data-bind="visible: isSelectProject, options: titles, value: current, click: selectProjectClick" autocomplete="off")
-                a.swap-project(data-bind="click: toggleSelectProject" href="#" title="Сменить проект")
+                a.swap-project(data-bind="click: toggleSelectProject, visible: isToggleProject" href="#" title="Сменить проект")
                     i.fa.fa-list
                 a.add-project(data-bind="click: addProject" href="#" title="Добавить проект")
                     i.fa.fa-plus
@@ -13,18 +13,20 @@ block content
                     i.fa.fa-minus
             h1
                 | Time Tracker
-                span.project-name
+                span.project-name(data-bind="text: ' — ' + current()")
         .timer-container
-            a.btn(href="#" title="Таймер")
+            a.btn(data-bind="click: toggleTimer" href="#" title="Таймер")
                 i.fa.fa-play
-            a.label(href="#" title="Таймер") 0:00:00
+            a.label(data-bind="click: toggleTimer, text: formatMilliseconds(diff())" href="#" title="Таймер")
             .total-time
-                | Всего времени в проекте: #[span.total.value 0:00:00]
+                | Всего времени в проекте: 
+                span.total.value(data-bind="text: formatMilliseconds(totalTime())")
                 br
-                | не учтенного: #[span.opened.value 0:00:00]
+                | не учтенного: 
+                span.opened.value(data-bind="text: formatMilliseconds(closedTime())")
         .times
-            .empty Пока нет учтенного времени
-            table.results
+            .empty(data-bind="visible: !currentTimesSize()") Пока нет учтенного времени
+            table.results(data-bind="visible: currentTimesSize")
                 thead
                     tr
                         th Учтено
@@ -33,4 +35,16 @@ block content
                         th Пояснение
                         th Всего
                         th
-                tbody
+                tbody(data-bind="foreach: currentTimes")
+                    tr(data-bind="component: {name: 'time-row', params: {app: $root, item: $data}}")
+
+        template#time-row-tmpl
+            td
+                input(data-bind="checked: closed" type="checkbox" class="closer")
+            td(data-bind="text: start, css: {'closed' : closed}")
+            td(data-bind="text: end, css: {'closed' : closed}")
+            td(data-bind="text: desc, css: {'closed' : closed, 'm-hidden' : true}")
+            td(data-bind="text: diff, css: {'closed' : closed}")
+            td
+                a(href="#" class="clear-btn" title="Удалить")
+                    i(class="fa fa-remove")
