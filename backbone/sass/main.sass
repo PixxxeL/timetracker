@@ -6,7 +6,6 @@ html, body
         size: 14px
     line-height: 18px
     width: 100%
-    height: 100%
     margin: 0
     padding: 0
     background: #efefef
@@ -19,6 +18,10 @@ h3
 
 a
     color: #000
+    &.invert
+        text-decoration: none
+        &:hover
+            text-decoration: underline
 
 a:hover
     text-decoration: none
@@ -82,12 +85,119 @@ textarea
     border: solid 1px transparent
 
 // =============================================================================
-#container
+#app-container
     text-align: center
 
-.container
+#content-wrapper
+    margin: 20px auto
     width: $desktopWidth
-    margin: auto
+    text-align: left
+    &.lock
+        .title-container .buttons a,
+        .times .results .clear-btn
+            opacity: .2
+            cursor: default
+
+.title-container
+    h1
+        line-height: 1em
+    .buttons
+        display: inline-block
+        float: right
+        font-size: 22px
+        a
+            color: #555
+            margin-left: 10px
+            &:hover
+                opacity: .8
+        .select-project
+            width: 200px
+            display: none
+            font-size: 14px
+            padding: 3px 7px
+
+.timer-container
+    border-bottom: dashed 1px #aaa
+    padding-bottom: 20px
+    .btn
+        color: #999
+        font-size: 50px
+        margin-right: 10px
+        &:hover
+            opacity: .8
+    .label
+        text-decoration: none
+        font-size: 50px
+        line-height: 100%
+        outline: none
+        &.active
+            color: #900
+    .total-time
+        display: inline-block
+        font-size: 16px
+        margin-left: 40px
+        text-align: right
+        .value
+            font-weight: bold
+            margin-left: 5px
+
+.times
+    margin-top: 20px
+    .empty
+        display: none
+        border: solid 1px #cbcbcb
+        background: #e7e7e7
+        color: #740808
+        padding: 10px 20px
+    .results
+        display: none
+        width: 100%
+        th, td
+            padding: 3px 0
+        .clear-btn
+            color: #a00
+            &:hover
+                opacity: .8
+    .closer
+        margin-left: 15px
+    .closed
+        text-decoration: line-through
+        color: #999
+
+
+$width : $desktopWidth - 1px
+@media screen and (max-width: $width)
+    .m-hidden
+        display: none
+    #content-wrapper
+        margin: 10px 0
+        width: 100%
+    .title-container
+        margin: 0 10px
+        .buttons
+            display: block
+            float: none
+            margin: 0 0 10px
+            text-align: right
+            .select-project
+                max-width: 200px
+                width: auto
+    .timer-container
+        margin: 0 10px
+        .total-time
+            display: block
+            text-align: left
+            margin-left: 0
+            margin-top: 10px
+    .times
+        .results
+            font-size: 12px
+            th
+                display: none
+            td
+                padding: 5px
+        .closer
+            margin-left: 0
 
 // =============================================================================
 

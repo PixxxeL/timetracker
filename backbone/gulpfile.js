@@ -5,8 +5,6 @@ var gulp       = require('gulp'),
     jade       = require('gulp-jade'),
     coffee     = require('gulp-coffee'),
     rename     = require('gulp-rename'),
-    //replStr    = require('gulp-replace'),
-    //ftp        = require('vinyl-ftp'),
     sourcemaps = require('gulp-sourcemaps'),
     compress   = require('gulp-yuicompressor'),
     concat     = require('gulp-concat'),
@@ -25,12 +23,11 @@ var paths = {
     'sass'   : './sass/**/*.sass',
     'jade'   : './jade/**/*.jade',
     'coffee' : './coffee/**/*.coffee',
-    'build'  : 'build' // I'm using ../../build
+    'build'  : '../../www' // I'm using ../../build
 };
 
 var separateJsFiles = [
-    'js/html5shiv.min.js', 'js/respond.min.js',
-    'js/jquery-1.12.4.min.js', 'js/jquery-2.2.4.min.js'
+    'js/underscore-min.js', 'js/backbone-min.js'
 ];
 
 /**
@@ -113,7 +110,7 @@ gulp.task('compile', ['jade', 'sass', 'coffee']);
 /**
  * Development task
  */
-gulp.task('default', ['compile', 'py-server', 'watch', 'browse']);
+gulp.task('default', ['compile', 'py-server', 'watch']);
 
 
 /**
@@ -126,15 +123,9 @@ gulp.task('copy', function () {
     gulp.src('bower_components/font-awesome/css/font-awesome.min.css')
         .pipe(gulp.dest('css'));
     gulp.src('bower_components/font-awesome/fonts/*.*').pipe(gulp.dest('fonts'));
-    gulp.src('bower_components/jquery-legacy/dist/jquery.min.js')
-        .pipe(rename('jquery-1.12.4.min.js'))
+    gulp.src('bower_components/underscore/underscore-min.js')
         .pipe(gulp.dest('js'));
-    gulp.src('bower_components/jquery-modern/dist/jquery.min.js')
-        .pipe(rename('jquery-2.2.4.min.js'))
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/respond/dest/respond.min.js')
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/html5shiv/dist/html5shiv.min.js')
+    gulp.src('bower_components/backbone/backbone-min.js')
         .pipe(gulp.dest('js'));
 });
 
@@ -224,20 +215,3 @@ gulp.task('py-demo', shell.task([
 gulp.task('php-demo', shell.task([
     'cd ' + paths.build + ' && php -S ' + SERVER
 ]));
-
-/**
- * Deploy through FTP
- * https://www.npmjs.com/package/vinyl-ftp
- */
-/*gulp.task('ftp-deploy', function () {
-    var conn = ftp.create({
-        host:     '',
-        user:     '',
-        password: '',
-        parallel: 10,
-        log:      console.log
-    });
-    gulp.src(paths.build + '/**', {base: '.', buffer: false})
-        .pipe(conn.dest(''));
-});
-gulp.task('deploy', ['build', 'ftp-deploy']);*/

@@ -5,40 +5,48 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <link rel="apple-touch-icon" href="/img/favicon.png">
-    <link rel="shortcut icon" href="/img/favicon.ico">
-    <title>Заголовок страницы</title>
-    <meta name="robots" content="noyaka">
-    <meta name="title" content="">
-    <meta name="og:title" content="">
-    <meta name="description" content="">
-    <meta name="og:description" content="">
-    <link rel="stylesheet" href="/css/font-awesome.min.css">
-    <!-- build:css-->
-    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="icon shortcut" href="/img/favicon.ico">
+    <title>Time Tracker</title>
+    <link rel="stylesheet" href="/bower_components/html5-boilerplate/dist/css/normalize.css">
+    <link rel="stylesheet" href="/bower_components/font-awesome/css/font-awesome.min.css">
     <link rel="stylesheet" href="/css/main.css">
-    <!-- endbuild-->
-    <!--[if lt IE 9]>
-    <script src="/js/html5shiv.min.js"></script>
-    <script src="/js/respond.min.js"></script><![endif]-->
   </head>
   <body><!--[if lt IE 9]>
     <p class="browserupgrade">Вы используете <strong>очень старый</strong> браузер.
       Пожалуйста, <a href="http://browsehappy.com/">обновите Ваш браузер</a>
       для улучшенного отображения сайта.
     </p><![endif]-->
-    <div id="container">
-      <header>-- верх --</header>
-      <main>
-        <h1>Заголовок страницы</h1>
-        <p>Содержимое...</p>
-      </main>
-      <footer>-- низ --</footer>
+    <div id="app-container">
+      <div id="content-wrapper">
+        <div class="title-container">
+          <div class="buttons">
+            <select class="select-project"></select><a href="#" title="Сменить проект" class="swap-project"><i class="fa fa-list"></i></a><a href="#" title="Добавить проект" class="add-project"><i class="fa fa-plus"></i></a><a href="#" title="Удалить проект" class="remove-project"><i class="fa fa-minus"></i></a>
+          </div>
+          <h1>Time Tracker<span class="project-name"></span></h1>
+        </div>
+        <div class="timer-container"><a href="#" title="Таймер" class="btn"><i class="fa fa-play"></i></a><a href="#" title="Таймер" class="label">0:00:00</a>
+          <div class="total-time">Всего времени в проекте: <span class="total value">0:00:00</span><br>не учтенного: <span class="opened value">0:00:00</span></div>
+        </div>
+        <div class="times">
+          <div class="empty">Пока нет учтенного времени</div>
+          <table class="results">
+            <thead>
+              <tr>
+                <th>Учтено</th>
+                <th>Начало</th>
+                <th>Завершение</th>
+                <th>Пояснение</th>
+                <th>Всего</th>
+                <th></th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </div>
     </div>
-    <script src="/js/jquery-2.2.4.min.js"></script><!--[if lt IE 9]><script src="/js/jquery-1.12.4.min.js"></script><![endif]-->
-    <!-- build:js-->
+    <script src="/js/underscore-min.js"></script>
+    <script src="/js/backbone-min.js"></script>
     <script src="/js/main.js"></script>
-    <!-- endbuild-->
-    <!-- build:ga-->
-    <!-- endbuild-->
   </body>
 </html>
