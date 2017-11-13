@@ -26,14 +26,13 @@ var paths = {
     'build'  : '../../www' // I'm using ../../build
 };
 
-var separateJsFiles = [
-    'js/underscore-min.js', 'js/backbone-min.js'
-];
+var separateJsFiles = [];
 
 /**
  * Add js files here for compress and concatenate
  */
 var concatenatedJsFiles = [
+    'js/underscore-min.js', 'js/backbone-min.js', 'js/jquery.min.js',
     'js/main.js'
 ];
 
@@ -126,6 +125,8 @@ gulp.task('copy', function () {
     gulp.src('bower_components/underscore/underscore-min.js')
         .pipe(gulp.dest('js'));
     gulp.src('bower_components/backbone/backbone-min.js')
+        .pipe(gulp.dest('js'));
+    gulp.src('bower_components/jquery/dist/jquery.min.js')
         .pipe(gulp.dest('js'));
 });
 

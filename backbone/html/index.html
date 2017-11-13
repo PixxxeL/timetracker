@@ -44,7 +44,20 @@
           </table>
         </div>
       </div>
+      <script id="time-row-tmpl" type="text/template">
+        <tr>
+          <td>
+            <input type="checkbox" class="closer">
+          </td>
+          <td><%= start %></td>
+          <td><%= end %></td>
+          <td><%= desc %></td>
+          <td><%= diffMs %></td>
+          <td><a href="#" title="Удалить" class="clear-btn"><i class="fa fa-remove"></i></a></td>
+        </tr>
+      </script>
     </div>
+    <script src="/js/jquery.min.js"></script>
     <script src="/js/underscore-min.js"></script>
     <script src="/js/backbone-min.js"></script>
     <script src="/js/main.js"></script>

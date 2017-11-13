@@ -4,36 +4,171 @@ var TIMETRACKER;
 TIMETRACKER = {
   Settings: {
     dataStorageKey: 'timetracker-data'
+  },
+  DefaultData: {
+    current: 'Default',
+    data: {
+      'Default': []
+    }
+  },
+  formatMilliseconds: function(ms) {
+    var hours, minutes, seconds;
+    ms = (ms * .001) | 0;
+    seconds = ms % 60;
+    minutes = ((ms / 60) % 60) | 0;
+    hours = (ms / 60 / 60) | 0;
+    if (seconds < 10) {
+      seconds = `0${seconds}`;
+    }
+    if (minutes < 10) {
+      minutes = `0${minutes}`;
+    }
+    return `${hours}:${minutes}:${seconds}`;
   }
 };
 
 Backbone.sync = function(method, model, options) {
-  return console.log(method, model, options);
+  var data, resp;
+  //console.log 'SYNC', method, model, options
+  switch (method) {
+    case 'read':
+      data = localStorage.getItem(TIMETRACKER.Settings.dataStorageKey);
+      if (data) {
+        data = JSON.parse(data);
+      }
+      data = data || TIMETRACKER.DefaultData;
+      resp = _.map(data.data, function(times, project) {
+        return {
+          name: project,
+          current: project === data.current,
+          times: new TIMETRACKER.TimesCollection(times)
+        };
+      });
+      break;
+    //console.log model.at(0).get('times').length
+    case 'create':
+      console.log('create');
+      break;
+    case 'update':
+      console.log('update');
+      break;
+    case 'delete':
+      console.log('delete');
+  }
+  if (resp) {
+    return options.success(resp);
+  } else {
+    return options.error('Not found');
+  }
 };
 
 TIMETRACKER.TimeModel = Backbone.Model.extend({
   defaults: {
     closed: false
+  },
+  start: function() {
+    return new Date(this.get('startTs')).toLocaleString();
+  },
+  end: function() {
+    return new Date(this.get('endTs')).toLocaleString();
+  },
+  diff: function() {
+    return this.get('endTs' - this.get('startTs'));
+  },
+  diffMs: function() {
+    return TIMETRACKER.formatMilliseconds(this.diff());
   }
 });
 
-TIMETRACKER.TimeCollection = Backbone.Collection.extend({
+TIMETRACKER.TimesCollection = Backbone.Collection.extend({
   model: TIMETRACKER.TimeModel
 });
 
-TIMETRACKER.TimeView = Backbone.View.extend({});
-
+TIMETRACKER.TimeView = Backbone.View.extend({
+  el: 'tr',
+  template: _.template($('#time-row-tmpl').html()),
+  events: {
+    'click .clear-btn': 'removeTime',
+    'click .closer': 'closeTime'
+  },
+  removeTime: function(e) {
+    e.preventDefault();
+    console.log('removeTime');
+    return null;
+  },
+  closeTime: function(e) {
+    e.preventDefault();
+    console.log('closeTime');
+    return null;
+  }
+});
 
 TIMETRACKER.ProjectModel = Backbone.Model.extend({});
 
 
-TIMETRACKER.ProjectCollection = Backbone.Collection.extend({
+TIMETRACKER.ProjectsCollection = Backbone.Collection.extend({
   model: TIMETRACKER.ProjectModel
 });
 
-TIMETRACKER.ProjectView = Backbone.View.extend({});
-
+TIMETRACKER.AppView = Backbone.View.extend({
+  el: $('#content-wrapper'),
+  events: {
+    'click    .swap-project': 'swapProject',
+    'change .select-project': 'selectProject',
+    'click  .select-project': 'clickSelectProject',
+    'click     .add-project': 'addProject',
+    'click  .remove-project': 'removeProject',
+    'click  .timer-container a.label': 'toggleTimer',
+    'click  .timer-container a.btn': 'toggleTimer'
+  },
+  initialize: function() {
+    _.bindAll(this, 'render');
+    $(window).on('click', this.closeSelectProject);
+    this.collection = new TIMETRACKER.ProjectsCollection();
+    this.collection.fetch();
+    return this.collection.bind('change', this.render);
+  },
+  swapProject: function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    console.log('swapProject');
+    return null;
+  },
+  selectProject: function(e) {
+    console.log('selectProject');
+    return null;
+  },
+  addProject: function(e) {
+    e.preventDefault();
+    console.log('addProject');
+    return null;
+  },
+  removeProject: function(e) {
+    e.preventDefault();
+    console.log('removeProject');
+    return null;
+  },
+  toggleTimer: function(e) {
+    e.preventDefault();
+    console.log('toggleTimer');
+    return null;
+  },
+  clickSelectProject: function(e) {
+    e.stopPropagation();
+    console.log('clickSelectProject');
+    return null;
+  },
+  closeSelectProject: function(e) {
+    e.stopPropagation();
+    console.log('closeSelectProject');
+    return null;
+  },
+  render: function() {
+    console.log(this.collection);
+    return this;
+  }
+});
 
 window.onload = function() {
-  return alert('Not implemented');
+  return new TIMETRACKER.AppView();
 };
