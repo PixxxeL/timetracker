@@ -45,16 +45,17 @@
         </div>
       </div>
       <script id="time-row-tmpl" type="text/template">
-        <tr>
-          <td>
-            <input type="checkbox" class="closer">
-          </td>
-          <td><%= start %></td>
-          <td><%= end %></td>
-          <td><%= desc %></td>
-          <td><%= diffMs %></td>
-          <td><a href="#" title="Удалить" class="clear-btn"><i class="fa fa-remove"></i></a></td>
-        </tr>
+        <td>
+          <input type="checkbox" <%= checked %> class="closer">
+        </td>
+        <td class="<%= closedCls %>"><%= start %></td>
+        <td class="<%= closedCls %>"><%= end %></td>
+        <td class="<%= hiddenCls %>"><%= desc %></td>
+        <td class="<%= closedCls %>"><%= diffMs %></td>
+        <td><a href="#" title="Удалить" class="clear-btn"><i class="fa fa-remove"></i></a></td>
+      </script>
+      <script id="time-row-tmpl" type="text/template">
+        <option value="<%= name %>"><%= name %></option>
       </script>
     </div>
     <script src="/js/jquery.min.js"></script>

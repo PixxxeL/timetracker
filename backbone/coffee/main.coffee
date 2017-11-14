@@ -1,14 +1,20 @@
 
 TIMETRACKER = {
+
     Settings : {
         dataStorageKey : 'timetracker-data'
     }
-    DefaultData : {
-        current : 'Default'
-        data : {
-            'Default' : []
+
+    DefaultData : ->
+        {
+            current : 'Default'
+            data : {
+                'Default' : []
+            }
         }
-    }
+
+    Data : {}
+
     formatMilliseconds : (ms) ->
         ms = (ms * .001) | 0
         seconds = ms % 60
@@ -19,34 +25,36 @@ TIMETRACKER = {
         if minutes < 10
             minutes = "0#{minutes}"
         "#{hours}:#{minutes}:#{seconds}"
+
 }
 
 
-Backbone.sync = (method, model, options) ->
-    #console.log 'SYNC', method, model, options
+Backbone.sync = (method, model, options={}) ->
     switch method
         when 'read'
             data = localStorage.getItem TIMETRACKER.Settings.dataStorageKey
             if data
                 data = JSON.parse data
-            data = data or TIMETRACKER.DefaultData
+            data = data or TIMETRACKER.DefaultData()
             resp = _.map data.data, (times, project) ->
                 {
                     name : project
                     current : project == data.current
                     times : new TIMETRACKER.TimesCollection(times)
                 }
-            #console.log model.at(0).get('times').length
-        when 'create'
-            console.log 'create'
-        when 'update'
-            console.log 'update'
-        when 'delete'
-            console.log 'delete'
-    if resp
-        options.success resp
+        when 'create', 'update', 'delete'
+            data = TIMETRACKER.DefaultData()
+            TIMETRACKER.Data.each (project) ->
+                if project.get('current')
+                    data.current = project.get('name')
+                data.data[project.get('name')] = project.get('times').toJSON()
+            localStorage.setItem TIMETRACKER.Settings.dataStorageKey, JSON.stringify data
+    if resp and options.success
+        options.success.call model, resp, options
+    else if options.error
+        options.error 'Sync error'
     else
-        options.error 'Not found'
+        console.error 'Sync error'
 
 
 TIMETRACKER.TimeModel = Backbone.Model.extend {
@@ -54,13 +62,28 @@ TIMETRACKER.TimeModel = Backbone.Model.extend {
         closed : false
     }
     start : ->
-        new Date(this.get 'startTs').toLocaleString()
+        new Date(@get 'startTs').toLocaleString 'ru-RU'
     end : ->
-        new Date(this.get 'endTs').toLocaleString()
+        new Date(@get 'endTs').toLocaleString 'ru-RU'
     diff : ->
-        this.get 'endTs' - this.get 'startTs'
+        @get('endTs') - @get('startTs')
     diffMs : ->
-        TIMETRACKER.formatMilliseconds this.diff()
+        TIMETRACKER.formatMilliseconds @diff()
+    closedCls : ->
+        if @get 'closed' then 'closed' else ''
+    hiddenCls : ->
+        [@closedCls(), 'm-hidden'].join ' '
+    asDict : ->
+        {
+            checked : if @get 'closed' then 'checked' else ''
+            desc : @get 'desc'
+            start : @start()
+            end : @end()
+            diff : @diff()
+            diffMs : @diffMs()
+            closedCls : @closedCls()
+            hiddenCls : @hiddenCls()
+        }
 }
 
 
@@ -70,27 +93,45 @@ TIMETRACKER.TimesCollection = Backbone.Collection.extend {
 
 
 TIMETRACKER.TimeView = Backbone.View.extend {
-    el : 'tr'
+
+    tagName : 'tr'
+
     template : _.template $('#time-row-tmpl').html()
+
     events : {
         'click .clear-btn' : 'removeTime'
         'click .closer'    : 'closeTime'
     }
 
+    initialize : ->
+        _.bindAll @, 'render', 'removeTime', 'closeTime', 'remove'
+        @model.bind 'change', @render
+        @model.bind 'destroy', @remove
+
     removeTime : (e) ->
         e.preventDefault()
-        console.log 'removeTime'
+        @model.destroy()
         null
 
     closeTime : (e) ->
         e.preventDefault()
-        console.log 'closeTime'
+        @model.set('closed', !@model.get 'closed').save()
         null
+
+    render : ->
+        @$el.html @template @model.asDict()
+        @
+
+    remove : ->
+        @$el.remove()
 }
 
 
 TIMETRACKER.ProjectModel = Backbone.Model.extend {
-    #
+    defaults : {
+        current : false
+        times : []
+    }
 }
 
 
@@ -114,11 +155,13 @@ TIMETRACKER.AppView = Backbone.View.extend {
     }
 
     initialize : ->
-        _.bindAll @, 'render'
+        _.bindAll @, 'render', 'addTime'
         $(window).on 'click', @.closeSelectProject
-        @collection = new TIMETRACKER.ProjectsCollection()
-        @collection.fetch()
-        @collection.bind 'change', @.render
+        TIMETRACKER.Data = new TIMETRACKER.ProjectsCollection()
+        #TIMETRACKER.Data.bind 'change', -> console.log 'change'
+        #TIMETRACKER.Data.bind 'add', @render
+        TIMETRACKER.Data.fetch()
+        @render()
 
     swapProject : (e) ->
         e.preventDefault()
@@ -152,12 +195,30 @@ TIMETRACKER.AppView = Backbone.View.extend {
 
     closeSelectProject : (e) ->
         e.stopPropagation()
-        console.log 'closeSelectProject'
+        if $('.select-project').is(':visible') and not $(e.target).hasClass('select-project')
+            @toggleProjectSelectList()
         null
 
     render : ->
-        console.log this.collection
+        project = TIMETRACKER.Data.findWhere({current:true})
+        times = project.get 'times'
+        if times.length
+            times.each @addTime
+            @$el.find('.results').show()
+            @$el.find('.empty').hide()
+        else
+            @$el.find('.results').hide()
+            @$el.find('.empty').show()
         @
+
+    addTime : (time) ->
+        view = new TIMETRACKER.TimeView {model: time}
+        @$el.find('.results tbody').append view.render().$el
+
+    toggleProjectSelectList : ->
+        $('.swap-project').toggle()
+        $('.select-project').toggle()
+        null
 
 }
 

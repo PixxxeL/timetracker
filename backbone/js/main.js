@@ -5,12 +5,15 @@ TIMETRACKER = {
   Settings: {
     dataStorageKey: 'timetracker-data'
   },
-  DefaultData: {
-    current: 'Default',
-    data: {
-      'Default': []
-    }
+  DefaultData: function() {
+    return {
+      current: 'Default',
+      data: {
+        'Default': []
+      }
+    };
   },
+  Data: {},
   formatMilliseconds: function(ms) {
     var hours, minutes, seconds;
     ms = (ms * .001) | 0;
@@ -27,16 +30,15 @@ TIMETRACKER = {
   }
 };
 
-Backbone.sync = function(method, model, options) {
+Backbone.sync = function(method, model, options = {}) {
   var data, resp;
-  //console.log 'SYNC', method, model, options
   switch (method) {
     case 'read':
       data = localStorage.getItem(TIMETRACKER.Settings.dataStorageKey);
       if (data) {
         data = JSON.parse(data);
       }
-      data = data || TIMETRACKER.DefaultData;
+      data = data || TIMETRACKER.DefaultData();
       resp = _.map(data.data, function(times, project) {
         return {
           name: project,
@@ -45,20 +47,24 @@ Backbone.sync = function(method, model, options) {
         };
       });
       break;
-    //console.log model.at(0).get('times').length
     case 'create':
-      console.log('create');
-      break;
     case 'update':
-      console.log('update');
-      break;
     case 'delete':
-      console.log('delete');
+      data = TIMETRACKER.DefaultData();
+      TIMETRACKER.Data.each(function(project) {
+        if (project.get('current')) {
+          data.current = project.get('name');
+        }
+        return data.data[project.get('name')] = project.get('times').toJSON();
+      });
+      localStorage.setItem(TIMETRACKER.Settings.dataStorageKey, JSON.stringify(data));
   }
-  if (resp) {
-    return options.success(resp);
+  if (resp && options.success) {
+    return options.success.call(model, resp, options);
+  } else if (options.error) {
+    return options.error('Sync error');
   } else {
-    return options.error('Not found');
+    return console.error('Sync error');
   }
 };
 
@@ -67,16 +73,38 @@ TIMETRACKER.TimeModel = Backbone.Model.extend({
     closed: false
   },
   start: function() {
-    return new Date(this.get('startTs')).toLocaleString();
+    return new Date(this.get('startTs')).toLocaleString('ru-RU');
   },
   end: function() {
-    return new Date(this.get('endTs')).toLocaleString();
+    return new Date(this.get('endTs')).toLocaleString('ru-RU');
   },
   diff: function() {
-    return this.get('endTs' - this.get('startTs'));
+    return this.get('endTs') - this.get('startTs');
   },
   diffMs: function() {
     return TIMETRACKER.formatMilliseconds(this.diff());
+  },
+  closedCls: function() {
+    if (this.get('closed')) {
+      return 'closed';
+    } else {
+      return '';
+    }
+  },
+  hiddenCls: function() {
+    return [this.closedCls(), 'm-hidden'].join(' ');
+  },
+  asDict: function() {
+    return {
+      checked: this.get('closed') ? 'checked' : '',
+      desc: this.get('desc'),
+      start: this.start(),
+      end: this.end(),
+      diff: this.diff(),
+      diffMs: this.diffMs(),
+      closedCls: this.closedCls(),
+      hiddenCls: this.hiddenCls()
+    };
   }
 });
 
@@ -85,26 +113,42 @@ TIMETRACKER.TimesCollection = Backbone.Collection.extend({
 });
 
 TIMETRACKER.TimeView = Backbone.View.extend({
-  el: 'tr',
+  tagName: 'tr',
   template: _.template($('#time-row-tmpl').html()),
   events: {
     'click .clear-btn': 'removeTime',
     'click .closer': 'closeTime'
   },
+  initialize: function() {
+    _.bindAll(this, 'render', 'removeTime', 'closeTime', 'remove');
+    this.model.bind('change', this.render);
+    return this.model.bind('destroy', this.remove);
+  },
   removeTime: function(e) {
     e.preventDefault();
-    console.log('removeTime');
+    this.model.destroy();
     return null;
   },
   closeTime: function(e) {
     e.preventDefault();
-    console.log('closeTime');
+    this.model.set('closed', !this.model.get('closed')).save();
     return null;
+  },
+  render: function() {
+    this.$el.html(this.template(this.model.asDict()));
+    return this;
+  },
+  remove: function() {
+    return this.$el.remove();
   }
 });
 
-TIMETRACKER.ProjectModel = Backbone.Model.extend({});
-
+TIMETRACKER.ProjectModel = Backbone.Model.extend({
+  defaults: {
+    current: false,
+    times: []
+  }
+});
 
 TIMETRACKER.ProjectsCollection = Backbone.Collection.extend({
   model: TIMETRACKER.ProjectModel
@@ -122,11 +166,13 @@ TIMETRACKER.AppView = Backbone.View.extend({
     'click  .timer-container a.btn': 'toggleTimer'
   },
   initialize: function() {
-    _.bindAll(this, 'render');
+    _.bindAll(this, 'render', 'addTime');
     $(window).on('click', this.closeSelectProject);
-    this.collection = new TIMETRACKER.ProjectsCollection();
-    this.collection.fetch();
-    return this.collection.bind('change', this.render);
+    TIMETRACKER.Data = new TIMETRACKER.ProjectsCollection();
+    //TIMETRACKER.Data.bind 'change', -> console.log 'change'
+    //TIMETRACKER.Data.bind 'add', @render
+    TIMETRACKER.Data.fetch();
+    return this.render();
   },
   swapProject: function(e) {
     e.preventDefault();
@@ -160,12 +206,38 @@ TIMETRACKER.AppView = Backbone.View.extend({
   },
   closeSelectProject: function(e) {
     e.stopPropagation();
-    console.log('closeSelectProject');
+    if ($('.select-project').is(':visible') && !$(e.target).hasClass('select-project')) {
+      this.toggleProjectSelectList();
+    }
     return null;
   },
   render: function() {
-    console.log(this.collection);
+    var project, times;
+    project = TIMETRACKER.Data.findWhere({
+      current: true
+    });
+    times = project.get('times');
+    if (times.length) {
+      times.each(this.addTime);
+      this.$el.find('.results').show();
+      this.$el.find('.empty').hide();
+    } else {
+      this.$el.find('.results').hide();
+      this.$el.find('.empty').show();
+    }
     return this;
+  },
+  addTime: function(time) {
+    var view;
+    view = new TIMETRACKER.TimeView({
+      model: time
+    });
+    return this.$el.find('.results tbody').append(view.render().$el);
+  },
+  toggleProjectSelectList: function() {
+    $('.swap-project').toggle();
+    $('.select-project').toggle();
+    return null;
   }
 });
 

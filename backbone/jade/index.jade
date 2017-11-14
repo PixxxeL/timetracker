@@ -34,18 +34,21 @@ block content
                         th Всего
                         th
                 tbody
+
     script(id="time-row-tmpl" type="text/template")
-        tr
-            td
-                input(type="checkbox" class="closer")
-            td
-                | <%= start %>
-            td
-                | <%= end %>
-            td
-                | <%= desc %>
-            td
-                | <%= diffMs %>
-            td
-                a(href="#" class="clear-btn" title="Удалить")
-                    i(class="fa fa-remove")
+        td
+            input(type="checkbox" class="closer" "<%= checked %>")
+        td(class!="<%= closedCls %>")
+            | <%= start %>
+        td(class!="<%= closedCls %>")
+            | <%= end %>
+        td(class!="<%= hiddenCls %>")
+            | <%= desc %>
+        td(class!="<%= closedCls %>")
+            | <%= diffMs %>
+        td
+            a(href="#" class="clear-btn" title="Удалить")
+                i(class="fa fa-remove")
+
+    script(id="time-row-tmpl" type="text/template")
+        option(value!="<%= name %>") <%= name %>
