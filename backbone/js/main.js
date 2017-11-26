@@ -27,6 +27,11 @@ TIMETRACKER = {
       minutes = `0${minutes}`;
     }
     return `${hours}:${minutes}:${seconds}`;
+  },
+  toggleProjectSelectList: function() {
+    $('.swap-project').toggle();
+    $('.select-project').toggle();
+    return null;
   }
 };
 
@@ -60,13 +65,16 @@ Backbone.sync = function(method, model, options = {}) {
         return data.data[project.get('name')] = project.get('times').toJSON();
       });
       localStorage.setItem(TIMETRACKER.Settings.dataStorageKey, JSON.stringify(data));
+      if (model instanceof TIMETRACKER.ProjectsCollection) {
+        resp = TIMETRACKER.Data.map(function(project) {
+          return project.toJSON();
+        });
+      }
   }
-  //resp = TIMETRACKER.Data
+  //console.log resp, options
   if (resp && options.success) {
     return options.success.call(model, resp, options);
-  } else if (options.error) {
-    return options.error('Sync error');
-  } else {
+  } else if (!options.error) {
     return console.error('Sync error');
   }
 };
@@ -149,15 +157,14 @@ TIMETRACKER.TimeView = Backbone.View.extend({
 TIMETRACKER.TimesView = Backbone.View.extend({
   el: $('.times'),
   initialize: function() {
-    _.bindAll(this, 'render', 'addOneTime');
-    this.collection = TIMETRACKER.Data.findWhere({
-      current: true
-    }).get('times');
+    _.bindAll(this, 'render', 'currentTimes', 'addOneTime');
+    this.currentTimes();
     return this.collection.bind('remove', function() {
       return Backbone.sync('update', this.collection);
     });
   },
   render: function() {
+    this.currentTimes();
     if (this.collection.length) {
       this.$el.find('.results').show().find('tbody').empty();
       this.$el.find('.empty').hide();
@@ -175,6 +182,11 @@ TIMETRACKER.TimesView = Backbone.View.extend({
     });
     this.$el.find('.results tbody').append(view.render().$el);
     return null;
+  },
+  currentTimes: function() {
+    return this.collection = TIMETRACKER.Data.findWhere({
+      current: true
+    }).get('times');
   }
 });
 
@@ -182,6 +194,12 @@ TIMETRACKER.ProjectModel = Backbone.Model.extend({
   defaults: {
     current: false,
     times: []
+  },
+  asDict: function() {
+    return {
+      selected: this.get('current') ? 'selected' : '',
+      name: this.get('name')
+    };
   }
 });
 
@@ -189,19 +207,75 @@ TIMETRACKER.ProjectsCollection = Backbone.Collection.extend({
   model: TIMETRACKER.ProjectModel
 });
 
+TIMETRACKER.ProjectView = Backbone.View.extend({
+  tagName: 'option',
+  initialize: function() {
+    return _.bindAll(this, 'render');
+  },
+  render: function() {
+    var name;
+    name = this.model.get('name');
+    this.$el.text(name).val(name).attr('selected', this.model.get('current'));
+    return this;
+  }
+});
+
+TIMETRACKER.ProjectsView = Backbone.View.extend({
+  el: $('select.select-project'),
+  events: {
+    'change': 'selectProject',
+    'click': 'clickSelectProject'
+  },
+  initialize: function() {
+    _.bindAll(this, 'render', 'addOneProject', 'selectProject', 'clickSelectProject');
+    return this.collection = TIMETRACKER.Data;
+  },
+  render: function() {
+    this.$el.empty();
+    if (this.collection.length) {
+      this.collection.each(this.addOneProject);
+    }
+    return this;
+  },
+  addOneProject: function(project) {
+    var view;
+    view = new TIMETRACKER.ProjectView({
+      model: project
+    });
+    this.$el.append(view.render().$el);
+    return null;
+  },
+  selectProject: function(e) {
+    var collection, value;
+    //if startDate
+    //    return alert 'Нельзя переключить пока работает таймер'
+    value = this.$el.val();
+    collection = this.collection;
+    collection.forEach(function(model) {
+      return model.set('current', value === model.get('name'));
+    });
+    collection.trigger('toggle');
+    TIMETRACKER.toggleProjectSelectList();
+    return null;
+  },
+  clickSelectProject: function(e) {
+    e.stopPropagation();
+    return null;
+  }
+});
+
 TIMETRACKER.TitleView = Backbone.View.extend({
   el: $('.title-container'),
   events: {
-    'click    .swap-project': 'swapProject',
-    'change .select-project': 'selectProject',
-    'click  .select-project': 'clickSelectProject',
-    'click     .add-project': 'addProject',
-    'click  .remove-project': 'removeProject'
+    'click   .swap-project': 'swapProject',
+    'click    .add-project': 'addProject',
+    'click .remove-project': 'removeProject'
   },
   initialize: function() {
-    _.bindAll(this, 'render', 'swapProject', 'selectProject', 'clickSelectProject', 'addProject', 'removeProject', 'toggleProjectSelectList', 'closeSelectProject');
+    _.bindAll(this, 'render', 'swapProject', 'addProject', 'removeProject', 'closeSelectProject');
     $(window).on('click', this.closeSelectProject);
-    return this.collection = TIMETRACKER.Data;
+    this.collection = TIMETRACKER.Data;
+    return this.projectsView = new TIMETRACKER.ProjectsView();
   },
   render: function() {
     var current;
@@ -209,6 +283,7 @@ TIMETRACKER.TitleView = Backbone.View.extend({
       current: true
     });
     this.$el.find('.project-name').text(` — ${current.get('name')}`);
+    this.projectsView.render();
     return this;
   },
   swapProject: function(e) {
@@ -216,17 +291,7 @@ TIMETRACKER.TitleView = Backbone.View.extend({
     e.stopPropagation();
     //if startDate
     //    return alert 'Нельзя переключить пока работает таймер'
-    this.toggleProjectSelectList();
-    return null;
-  },
-  selectProject: function(e) {
-    //if startDate
-    //    return alert 'Нельзя переключить пока работает таймер'
-    console.log('selectProject');
-    return null;
-  },
-  clickSelectProject: function(e) {
-    e.stopPropagation();
+    TIMETRACKER.toggleProjectSelectList();
     return null;
   },
   addProject: function(e) {
@@ -242,30 +307,43 @@ TIMETRACKER.TitleView = Backbone.View.extend({
     if (this.collection.pluck('name').indexOf(title) !== -1) {
       return alert('Такой проект уже существует');
     }
-    TIMETRACKER.Data.add({
-      name: title,
-      current: false,
-      times: []
+    this.collection.forEach(function(model) {
+      return model.set('current', false);
     });
+    this.collection.add({
+      name: title,
+      current: true,
+      times: new TIMETRACKER.TimesCollection
+    });
+    this.collection.trigger('toggle');
     return null;
   },
   removeProject: function(e) {
+    var current;
     e.preventDefault();
     //if startDate
     //    return alert 'Нельзя удалить проект пока работает таймер'
-    console.log('removeProject');
+    if (!confirm('Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?')) {
+      return;
+    }
+    current = this.collection.findWhere({
+      current: true
+    });
+    if ('Default' === current.get('name')) {
+      return alert('Нельзя удалить проект `Default`');
+    }
+    this.collection.remove(current);
+    this.collection.forEach(function(model) {
+      return model.set('current', 'Default' === model.get('name'));
+    });
+    this.collection.trigger('toggle');
     return null;
   },
   closeSelectProject: function(e) {
     e.stopPropagation();
     if ($('.select-project').is(':visible') && !$(e.target).hasClass('select-project')) {
-      this.toggleProjectSelectList();
+      TIMETRACKER.toggleProjectSelectList();
     }
-    return null;
-  },
-  toggleProjectSelectList: function() {
-    $('.swap-project').toggle();
-    $('.select-project').toggle();
     return null;
   }
 });
@@ -273,8 +351,8 @@ TIMETRACKER.TitleView = Backbone.View.extend({
 TIMETRACKER.TimerView = Backbone.View.extend({
   el: $('.timer-container'),
   events: {
-    'click  .timer-container a.label': 'toggleTimer',
-    'click  .timer-container a.btn': 'toggleTimer'
+    'click a.label': 'toggleTimer',
+    'click a.btn': 'toggleTimer'
   },
   initialize: function() {
     return _.bindAll(this, 'render', 'toggleTimer');
@@ -290,17 +368,25 @@ TIMETRACKER.TimerView = Backbone.View.extend({
 });
 
 TIMETRACKER.AppView = Backbone.View.extend({
-  el: $('#content-wrapper'),
+  id: 'content-wrapper',
   initialize: function() {
     _.bindAll(this, 'render');
     TIMETRACKER.Data = new TIMETRACKER.ProjectsCollection();
     TIMETRACKER.Data.fetch();
+    TIMETRACKER.Data.on('toggle', function() {
+      return Backbone.sync('update', TIMETRACKER.Data, {
+        success: this.render
+      });
+    }, this);
+    this.titleView = new TIMETRACKER.TitleView();
+    this.timerView = new TIMETRACKER.TimerView();
+    this.timesView = new TIMETRACKER.TimesView();
     return this.render();
   },
   render: function() {
-    new TIMETRACKER.TitleView().render();
-    new TIMETRACKER.TimerView().render();
-    new TIMETRACKER.TimesView().render();
+    this.titleView.render();
+    this.timerView.render();
+    this.timesView.render();
     return this;
   }
 });

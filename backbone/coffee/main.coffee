@@ -26,6 +26,11 @@ TIMETRACKER = {
             minutes = "0#{minutes}"
         "#{hours}:#{minutes}:#{seconds}"
 
+    toggleProjectSelectList : ->
+        $('.swap-project').toggle()
+        $('.select-project').toggle()
+        null
+
 }
 
 
@@ -51,31 +56,40 @@ Backbone.sync = (method, model, options={}) ->
                     data.current = project.get('name')
                 data.data[project.get('name')] = project.get('times').toJSON()
             localStorage.setItem TIMETRACKER.Settings.dataStorageKey, JSON.stringify data
-            #resp = TIMETRACKER.Data
+            if model instanceof TIMETRACKER.ProjectsCollection
+                resp = TIMETRACKER.Data.map (project) ->
+                    project.toJSON()
+    #console.log resp, options
     if resp and options.success
         options.success.call model, resp, options
-    else if options.error
-        options.error 'Sync error'
-    else
+    else if not options.error
         console.error 'Sync error'
 
 
 TIMETRACKER.TimeModel = Backbone.Model.extend {
+
     defaults : {
         closed : false
     }
+
     start : ->
         new Date(@get 'startTs').toLocaleString 'ru-RU'
+
     end : ->
         new Date(@get 'endTs').toLocaleString 'ru-RU'
+
     diff : ->
         @get('endTs') - @get('startTs')
+
     diffMs : ->
         TIMETRACKER.formatMilliseconds @diff()
+
     closedCls : ->
         if @get 'closed' then 'closed' else ''
+
     hiddenCls : ->
         [@closedCls(), 'm-hidden'].join ' '
+
     asDict : ->
         {
             checked : if @get 'closed' then 'checked' else ''
@@ -135,12 +149,13 @@ TIMETRACKER.TimesView = Backbone.View.extend {
     el : $ '.times'
 
     initialize : ->
-        _.bindAll @, 'render', 'addOneTime'
-        @collection = TIMETRACKER.Data.findWhere({current:true}).get('times')
+        _.bindAll @, 'render', 'currentTimes', 'addOneTime'
+        @currentTimes()
         @collection.bind 'remove', ->
             Backbone.sync 'update', @collection
 
     render : ->
+        @currentTimes()
         if @collection.length
             @$el.find('.results').show().find('tbody').empty()
             @$el.find('.empty').hide()
@@ -154,6 +169,9 @@ TIMETRACKER.TimesView = Backbone.View.extend {
         view = new TIMETRACKER.TimeView {model: time}
         @$el.find('.results tbody').append view.render().$el
         null
+
+    currentTimes : ->
+        @collection = TIMETRACKER.Data.findWhere({current:true}).get('times')
 }
 
 
@@ -162,6 +180,12 @@ TIMETRACKER.ProjectModel = Backbone.Model.extend {
         current : false
         times : []
     }
+
+    asDict : ->
+        {
+            selected : if @get 'current' then 'selected' else ''
+            name : @get 'name'
+        }
 }
 
 
@@ -170,28 +194,83 @@ TIMETRACKER.ProjectsCollection = Backbone.Collection.extend {
 }
 
 
+TIMETRACKER.ProjectView = Backbone.View.extend {
+
+    tagName : 'option'
+
+    initialize : ->
+        _.bindAll @, 'render'
+
+    render : ->
+        name = @model.get 'name'
+        @$el.text(name).val(name).attr 'selected', @model.get 'current'
+        @
+}
+
+
+TIMETRACKER.ProjectsView = Backbone.View.extend {
+
+    el : $ 'select.select-project'
+
+    events : {
+        'change' : 'selectProject'
+        'click'  : 'clickSelectProject'
+    }
+
+    initialize : ->
+        _.bindAll @, 'render', 'addOneProject', 'selectProject', 'clickSelectProject'
+        @collection = TIMETRACKER.Data
+
+    render : ->
+        @$el.empty()
+        if @collection.length
+            @collection.each @addOneProject
+        @
+
+    addOneProject : (project) ->
+        view = new TIMETRACKER.ProjectView {model: project}
+        @$el.append view.render().$el
+        null
+
+    selectProject : (e) ->
+        #if startDate
+        #    return alert 'Нельзя переключить пока работает таймер'
+        value = @$el.val()
+        collection = @collection
+        collection.forEach (model) ->
+            model.set 'current', value == model.get 'name'
+        collection.trigger 'toggle'
+        TIMETRACKER.toggleProjectSelectList()
+        null
+
+    clickSelectProject : (e) ->
+        e.stopPropagation()
+        null
+
+}
+
+
 TIMETRACKER.TitleView = Backbone.View.extend {
 
     el : $ '.title-container'
 
     events : {
-        'click    .swap-project' : 'swapProject'
-        'change .select-project' : 'selectProject'
-        'click  .select-project' : 'clickSelectProject'
-        'click     .add-project' : 'addProject'
-        'click  .remove-project' : 'removeProject'
+        'click   .swap-project' : 'swapProject'
+        'click    .add-project' : 'addProject'
+        'click .remove-project' : 'removeProject'
     }
 
     initialize : ->
-        _.bindAll @, 'render', 'swapProject', 'selectProject',
-            'clickSelectProject', 'addProject', 'removeProject',
-            'toggleProjectSelectList', 'closeSelectProject'
+        _.bindAll @, 'render', 'swapProject', 'addProject', 'removeProject',
+            'closeSelectProject'
         $(window).on 'click', @closeSelectProject
         @collection = TIMETRACKER.Data
+        @projectsView = new TIMETRACKER.ProjectsView()
 
     render : ->
         current = TIMETRACKER.Data.findWhere {current:true}
         @$el.find('.project-name').text " — #{current.get('name')}"
+        @projectsView.render()
         @
 
     swapProject : (e) ->
@@ -199,17 +278,7 @@ TIMETRACKER.TitleView = Backbone.View.extend {
         e.stopPropagation()
         #if startDate
         #    return alert 'Нельзя переключить пока работает таймер'
-        @toggleProjectSelectList()
-        null
-
-    selectProject : (e) ->
-        #if startDate
-        #    return alert 'Нельзя переключить пока работает таймер'
-        console.log 'selectProject'
-        null
-
-    clickSelectProject : (e) ->
-        e.stopPropagation()
+        TIMETRACKER.toggleProjectSelectList()
         null
 
     addProject : (e) ->
@@ -222,29 +291,35 @@ TIMETRACKER.TitleView = Backbone.View.extend {
             return alert 'Вы не ввели название проекта'
         if @collection.pluck('name').indexOf(title) != -1
             return alert 'Такой проект уже существует'
-        TIMETRACKER.Data.add {
+        @collection.forEach (model) ->
+            model.set 'current', false
+        @collection.add {
             name : title
-            current : false
-            times : []
+            current : true
+            times : new TIMETRACKER.TimesCollection
         }
+        @collection.trigger 'toggle'
         null
 
     removeProject : (e) ->
         e.preventDefault()
         #if startDate
         #    return alert 'Нельзя удалить проект пока работает таймер'
-        console.log 'removeProject'
+        if not confirm 'Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?'
+            return
+        current = @collection.findWhere({current:true})
+        if 'Default' == current.get 'name'
+            return alert 'Нельзя удалить проект `Default`'
+        @collection.remove current
+        @collection.forEach (model) ->
+            model.set 'current', 'Default' == model.get 'name'
+        @collection.trigger 'toggle'
         null
 
     closeSelectProject : (e) ->
         e.stopPropagation()
         if $('.select-project').is(':visible') and not $(e.target).hasClass('select-project')
-            @toggleProjectSelectList()
-        null
-
-    toggleProjectSelectList : ->
-        $('.swap-project').toggle()
-        $('.select-project').toggle()
+            TIMETRACKER.toggleProjectSelectList()
         null
 
 }
@@ -255,8 +330,8 @@ TIMETRACKER.TimerView = Backbone.View.extend {
     el : $ '.timer-container'
 
     events : {
-        'click  .timer-container a.label' : 'toggleTimer'
-        'click  .timer-container a.btn'   : 'toggleTimer'
+        'click a.label' : 'toggleTimer'
+        'click a.btn'   : 'toggleTimer'
     }
 
     initialize : ->
@@ -276,18 +351,26 @@ TIMETRACKER.TimerView = Backbone.View.extend {
 
 TIMETRACKER.AppView = Backbone.View.extend {
 
-    el : $('#content-wrapper')
+    id : 'content-wrapper'
 
     initialize : ->
         _.bindAll @, 'render'
         TIMETRACKER.Data = new TIMETRACKER.ProjectsCollection()
         TIMETRACKER.Data.fetch()
+        TIMETRACKER.Data.on 'toggle', ->
+            Backbone.sync 'update', TIMETRACKER.Data, {
+                success : @render
+            }
+        , @
+        @titleView = new TIMETRACKER.TitleView()
+        @timerView = new TIMETRACKER.TimerView()
+        @timesView = new TIMETRACKER.TimesView()
         @render()
 
     render : ->
-        new TIMETRACKER.TitleView().render()
-        new TIMETRACKER.TimerView().render()
-        new TIMETRACKER.TimesView().render()
+        @titleView.render()
+        @timerView.render()
+        @timesView.render()
         @
 
 }
