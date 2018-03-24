@@ -62,8 +62,6 @@ Backbone.sync = (method, model, options={}) ->
     #console.log resp, options
     if resp and options.success
         options.success.call model, resp, options
-    else if not options.error
-        console.error 'Sync error'
 
 
 TIMETRACKER.TimeModel = Backbone.Model.extend {
@@ -127,12 +125,18 @@ TIMETRACKER.TimeView = Backbone.View.extend {
 
     removeTime : (e) ->
         e.preventDefault()
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя удалить время пока работает таймер'
         @model.destroy()
+        @trigger 'destroy:time'
         null
 
     closeTime : (e) ->
         e.preventDefault()
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя переключить время пока работает таймер'
         @model.set('closed', !@model.get 'closed').save()
+        @trigger 'update:time'
         null
 
     render : ->
@@ -140,6 +144,7 @@ TIMETRACKER.TimeView = Backbone.View.extend {
         @
 
     remove : ->
+        @off()
         @$el.remove()
 }
 
@@ -166,7 +171,10 @@ TIMETRACKER.TimesView = Backbone.View.extend {
         @
 
     addOneTime : (time) ->
+        timesView = @
         view = new TIMETRACKER.TimeView {model: time}
+        view.on 'destroy:time update:time', ->
+            timesView.trigger 'update:times'
         @$el.find('.results tbody').append view.render().$el
         null
 
@@ -233,8 +241,8 @@ TIMETRACKER.ProjectsView = Backbone.View.extend {
         null
 
     selectProject : (e) ->
-        #if startDate
-        #    return alert 'Нельзя переключить пока работает таймер'
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя выбрать проект пока работает таймер'
         value = @$el.val()
         collection = @collection
         collection.forEach (model) ->
@@ -245,6 +253,8 @@ TIMETRACKER.ProjectsView = Backbone.View.extend {
 
     clickSelectProject : (e) ->
         e.stopPropagation()
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя, пока работает таймер'
         null
 
 }
@@ -276,15 +286,15 @@ TIMETRACKER.TitleView = Backbone.View.extend {
     swapProject : (e) ->
         e.preventDefault()
         e.stopPropagation()
-        #if startDate
-        #    return alert 'Нельзя переключить пока работает таймер'
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя переключить проект пока работает таймер'
         TIMETRACKER.toggleProjectSelectList()
         null
 
     addProject : (e) ->
         e.preventDefault()
-        #if startDate
-        #    return alert 'Нельзя добавить проект пока работает таймер'
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя добавить проект пока работает таймер'
         title = prompt 'Введите название нового проекта:'
         title = $.trim(title or '')
         if not title
@@ -303,8 +313,8 @@ TIMETRACKER.TitleView = Backbone.View.extend {
 
     removeProject : (e) ->
         e.preventDefault()
-        #if startDate
-        #    return alert 'Нельзя удалить проект пока работает таймер'
+        if $('#content-wrapper').hasClass 'lock'
+            return alert 'Нельзя удалить проект пока работает таймер'
         if not confirm 'Вы действительно хотите БЕЗВОЗВРАТНО удалить проект?'
             return
         current = @collection.findWhere({current:true})
@@ -335,16 +345,68 @@ TIMETRACKER.TimerView = Backbone.View.extend {
     }
 
     initialize : ->
-        _.bindAll @, 'render', 'toggleTimer'
+        @calcTotal()
+        @model = null
+        @timerEl = @$el.find 'a.label'
+        @btnEl = @$el.find 'i.fa'
+        @totalEl = @$el.find('.total-time .total.value').text TIMETRACKER.formatMilliseconds(@total)
+        @openedEl = @$el.find('.total-time .opened.value').text TIMETRACKER.formatMilliseconds(@opened)
+        _.bindAll @, 'render', 'toggleTimer', 'syncCollection', 'calcTotal'
 
     render : ->
-        #
+        @loopCounter += 1
+        format = TIMETRACKER.formatMilliseconds
+        if @model
+            endTs = new Date().getTime()
+            diff = endTs - @model.get 'startTs'
+            @timerEl.text format(diff)
+            @totalEl.text format(diff + @total)
+            @openedEl.text format(diff + @opened)
+            #if @loopCounter % 100 is 0 # per 5 seconds
+            #    @model.set 'endTs', endTs
+            @model.set 'endTs', endTs
+            requestAnimationFrame @render
+        else
+            @calcTotal()
+            @totalEl.text format(@total)
+            @openedEl.text format(@opened)
         @
 
     toggleTimer : (e) ->
         e.preventDefault()
-        console.log 'toggleTimer'
+        $('#content-wrapper').toggleClass 'lock'
+        if @model
+            @btnEl.removeClass('fa-pause').addClass('fa-play')
+            @model.unbind 'change', @syncCollection
+            @model = null
+        else
+            @btnEl.removeClass('fa-play').addClass('fa-pause')
+            @loopCounter = 0
+            ts = new Date().getTime()
+            @model = new TIMETRACKER.TimeModel {
+                startTs : ts,
+                endTs : ts,
+                desc : (prompt('Можете ввести пояснение:') || '').trim(),
+            }
+            @model.bind 'change', @syncCollection
+            @collection = TIMETRACKER.Data.findWhere({current:true})
+            @collection.get('times').unshift @model
+            requestAnimationFrame @render
+        @trigger 'update:periodic'
         null
+
+    syncCollection : () ->
+        if @model
+            Backbone.sync 'update', TIMETRACKER.Data
+
+    calcTotal : ->
+        @collection = TIMETRACKER.Data.findWhere({current:true})
+        @total = @collection.get('times').reduce((prev, model) ->
+            prev + model.diff()
+        , 0)
+        @opened = @collection.get('times').reduce((prev, model) ->
+            prev + (if model.get 'closed' then 0 else model.diff())
+        , 0)
 
 }
 
@@ -365,6 +427,8 @@ TIMETRACKER.AppView = Backbone.View.extend {
         @titleView = new TIMETRACKER.TitleView()
         @timerView = new TIMETRACKER.TimerView()
         @timesView = new TIMETRACKER.TimesView()
+        @timesView.on 'update:times', @timerView.render
+        @timerView.on 'update:periodic', @timesView.render
         @render()
 
     render : ->
