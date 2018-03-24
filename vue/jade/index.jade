@@ -1,0 +1,46 @@
+extends base.jade
+
+block content
+    template#layout-tmpl
+        #content-wrapper
+            title-view
+            timer-view
+            times-view
+
+    template#title-tmpl
+        .title-container
+            .buttons
+                select.select-project
+                a.swap-project(href="#" title="Сменить проект")
+                    i.fa.fa-list
+                a.add-project(href="#" title="Добавить проект")
+                    i.fa.fa-plus
+                a.remove-project(href="#" title="Удалить проект")
+                    i.fa.fa-minus
+            h1
+                | Time Tracker
+                span.project-name
+
+    template#timer-tmpl
+        .timer-container
+            a.btn(href="#" title="Таймер")
+                i.fa.fa-play
+            a.label(href="#" title="Таймер") 0:00:00
+            .total-time
+                | Всего времени в проекте: #[span.total.value 0:00:00]
+                br
+                | не учтенного: #[span.opened.value 0:00:00]
+
+    template#times-tmpl
+        .times
+            .empty Пока нет учтенного времени
+            table.results
+                thead
+                    tr
+                        th Учтено
+                        th Начало
+                        th Завершение
+                        th Пояснение
+                        th Всего
+                        th
+                tbody

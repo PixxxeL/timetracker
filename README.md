@@ -1,9 +1,9 @@
-# Timetracker -- js frameworks compare
+# Timetracker. JS frameworks compare
 
 This is a simple project for track time of working process.
 It's created on some variant of Javascript frameworks:
 [jQuery](https://jquery.com/),
-[Backbone](http://backbonejs.org/),
+[Backbone.js](http://backbonejs.org/),
 [Knockout](http://knockoutjs.com/),
 [React](https://reactjs.org/)
 with identically functionality.

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="apple-touch-icon" href="/img/favicon.png">
+    <link rel="icon shortcut" href="/img/favicon.ico">
+    <title>Time Tracker</title>
+    <link rel="stylesheet" href="/css/font-awesome.min.css">
+    <!-- build:css-->
+    <link rel="stylesheet" href="/css/normalize.css">
+    <link rel="stylesheet" href="/css/main.css">
+    <!-- endbuild-->
+  </head>
+  <body><!--[if lt IE 9]>
+    <p class="browserupgrade">Вы используете <strong>очень старый</strong> браузер.
+      Пожалуйста, <a href="http://browsehappy.com/">обновите Ваш браузер</a>
+      для улучшенного отображения сайта.
+    </p><![endif]-->
+    <div id="app-container"></div>
+    <template id="layout-tmpl">
+      <div id="content-wrapper">
+        <title-view></title-view>
+        <timer-view></timer-view>
+        <times-view></times-view>
+      </div>
+    </template>
+    <template id="title-tmpl">
+      <div class="title-container">
+        <div class="buttons">
+          <select class="select-project"></select><a href="#" title="Сменить проект" class="swap-project"><i class="fa fa-list"></i></a><a href="#" title="Добавить проект" class="add-project"><i class="fa fa-plus"></i></a><a href="#" title="Удалить проект" class="remove-project"><i class="fa fa-minus"></i></a>
+        </div>
+        <h1>Time Tracker<span class="project-name"></span></h1>
+      </div>
+    </template>
+    <template id="timer-tmpl">
+      <div class="timer-container"><a href="#" title="Таймер" class="btn"><i class="fa fa-play"></i></a><a href="#" title="Таймер" class="label">0:00:00</a>
+        <div class="total-time">Всего времени в проекте: <span class="total value">0:00:00</span><br>не учтенного: <span class="opened value">0:00:00</span></div>
+      </div>
+    </template>
+    <template id="times-tmpl">
+      <div class="times">
+        <div class="empty">Пока нет учтенного времени</div>
+        <table class="results">
+          <thead>
+            <tr>
+              <th>Учтено</th>
+              <th>Начало</th>
+              <th>Завершение</th>
+              <th>Пояснение</th>
+              <th>Всего</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </template>
+    <!-- build:js-->
+    <script src="/js/vue.js"></script>
+    <script src="/js/main.js"></script>
+    <!-- endbuild-->
+  </body>
+</html>
