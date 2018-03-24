@@ -17,9 +17,7 @@
   ],
   "dependencies": {
     "html5-boilerplate": "^6.0.1",
-    "font-awesome": "^5.0.8",
-    "html5shiv": "^3.7.3",
-    "respond": "^1.4.2",
+    "font-awesome": "4",
     "vue": "^2.5.16"
   }
 }

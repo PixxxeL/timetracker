@@ -28,14 +28,13 @@ var paths = {
     'build'  : '../../www' // I'm using ../../build
 };
 
-var separateJsFiles = [
-    'js/html5shiv.min.js', 'js/respond.min.js'
-];
+var separateJsFiles = [];
 
 /**
  * Add js files here for compress and concatenate
  */
 var concatenatedJsFiles = [
+    'js/vue.js',
     'js/main.js'
 ];
 
@@ -126,10 +125,6 @@ gulp.task('copy', function () {
         .pipe(gulp.dest('css'));
     gulp.src('bower_components/font-awesome/fonts/*.*').pipe(gulp.dest('fonts'));
     gulp.src('bower_components/vue/dist/vue.js')
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/respond/dest/respond.min.js')
-        .pipe(gulp.dest('js'));
-    gulp.src('bower_components/html5shiv/dist/html5shiv.min.js')
         .pipe(gulp.dest('js'));
 });
 
