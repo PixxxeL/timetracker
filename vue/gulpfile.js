@@ -34,6 +34,7 @@ var separateJsFiles = [];
  * Add js files here for compress and concatenate
  */
 var concatenatedJsFiles = [
+    'js/underscore.js',
     'js/vue.js',
     'js/main.js'
 ];
@@ -125,6 +126,8 @@ gulp.task('copy', function () {
         .pipe(gulp.dest('css'));
     gulp.src('bower_components/font-awesome/fonts/*.*').pipe(gulp.dest('fonts'));
     gulp.src('bower_components/vue/dist/vue.js')
+        .pipe(gulp.dest('js'));
+    gulp.src('bower_components/underscore/underscore.js')
         .pipe(gulp.dest('js'));
 });
 

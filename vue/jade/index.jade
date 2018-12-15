@@ -2,39 +2,44 @@ extends base.jade
 
 block content
     template#layout-tmpl
-        #content-wrapper
-            title-view
-            timer-view
-            times-view
+        #content-wrapper(v-bind:class="{lock: startDate}")
+            title-view(v-bind:projects="projects" v-bind:current="current" v-bind:start-date="startDate" @change:current="changeCurrent" @add:project="addProject" @remove:project="removeProject")
+            timer-view(v-bind:projects="projects" v-bind:current="current" v-bind:start-date="startDate" @timer:toggle="timerToggle")
+            times-view(v-bind:projects="projects" v-bind:current="current" v-bind:start-date="startDate" @times:change="timesChange")
 
     template#title-tmpl
         .title-container
             .buttons
-                select.select-project
-                a.swap-project(href="#" title="Сменить проект")
+                select.select-project(@change="select" v-model="selected" v-show="opened" v-click-outside="onOutside")
+                    option(v-for="project in projectTitles" v-bind:value="project")
+                        | {{ project }}
+                a.swap-project(href="#" title="Сменить проект" @click.prevent.stop="toggle" v-if="projectTitles.length > 1")
                     i.fa.fa-list
-                a.add-project(href="#" title="Добавить проект")
+                a.add-project(href="#" title="Добавить проект" @click.prevent="add")
                     i.fa.fa-plus
-                a.remove-project(href="#" title="Удалить проект")
+                a.remove-project(href="#" title="Удалить проект" @click.prevent="remove")
                     i.fa.fa-minus
             h1
                 | Time Tracker
                 span.project-name
+                    | — {{ current }}
 
     template#timer-tmpl
         .timer-container
-            a.btn(href="#" title="Таймер")
-                i.fa.fa-play
-            a.label(href="#" title="Таймер") 0:00:00
+            a.btn(href="#" title="Таймер" @click="toggle")
+                i.fa(v-bind:class="{'fa-pause': running, 'fa-play': !running}")
+            a.label(href="#" title="Таймер" @click="toggle") {{ time|millis }}
             .total-time
-                | Всего времени в проекте: #[span.total.value 0:00:00]
+                | Всего времени в проекте:
+                span.total.value {{ total|millis }}
                 br
-                | не учтенного: #[span.opened.value 0:00:00]
+                | не учтенного:
+                span.opened.value {{ opened|millis }}
 
     template#times-tmpl
         .times
-            .empty Пока нет учтенного времени
-            table.results
+            .empty(v-if="!exist") Пока нет учтенного времени
+            table.results(v-if="exist")
                 thead
                     tr
                         th Учтено
@@ -44,15 +49,16 @@ block content
                         th Всего
                         th
                 tbody
+                    tr(is="time-view" v-for="time in times" v-bind:key="time.startTs" v-bind:time="time" v-bind:start-date="startDate" @time:close="close" @time:remove="remove")
 
     template#time-tmpl
         tr
             td
-                input(type="checkbox" class="closer")
+                input(type="checkbox" class="closer" @change="close" v-model="closed" v-bind:disabled="startDate")
+            td(v-bind:class="{closed: time.closed}") {{ time.startTs|loctime }}
+            td(v-bind:class="{closed: time.closed}") {{ time.endTs|loctime }}
+            td.m-hidden(v-bind:class="{closed: time.closed}") {{ time.desc }}
+            td(v-bind:class="{closed: time.closed}") {{ diff|millis }}
             td
-            td
-            td
-            td
-            td
-                a(href="#" class="clear-btn" title="Удалить")
+                a(href="#" class="clear-btn" title="Удалить" @click.prevent="remove")
                     i(class="fa fa-remove")

@@ -6,6 +6,7 @@ It's created on some variant of Javascript frameworks:
 [Backbone.js](http://backbonejs.org/),
 [Knockout](http://knockoutjs.com/),
 [React](https://reactjs.org/)
+[Vue.js](https://vuejs.org/)
 with identically functionality.
 For compare them.
 
@@ -23,7 +24,7 @@ For React variant -- [Webpack](https://webpack.js.org/) also.
 
 ## Environment
 
-* Change directory to `jquery` or `backbone` or `knockout` or `react`
+* Change directory to `jquery` or `backbone` or `knockout` or `react` or `vue`
   from repository root
 * Run `bower install`
 * Run `npm install`
