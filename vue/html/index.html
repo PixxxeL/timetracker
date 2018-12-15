@@ -20,29 +20,31 @@
     </p><![endif]-->
     <div id="app-container"></div>
     <template id="layout-tmpl">
-      <div id="content-wrapper">
-        <title-view></title-view>
-        <timer-view></timer-view>
-        <times-view></times-view>
+      <div id="content-wrapper" v-bind:class="{lock: startDate}">
+        <title-view v-bind:projects="projects" v-bind:current="current" v-bind:start-date="startDate" @change:current="changeCurrent" @add:project="addProject" @remove:project="removeProject"></title-view>
+        <timer-view v-bind:projects="projects" v-bind:current="current" v-bind:start-date="startDate" @timer:toggle="timerToggle"></timer-view>
+        <times-view v-bind:projects="projects" v-bind:current="current" v-bind:start-date="startDate" @times:change="timesChange"></times-view>
       </div>
     </template>
     <template id="title-tmpl">
       <div class="title-container">
         <div class="buttons">
-          <select class="select-project"></select><a href="#" title="Сменить проект" class="swap-project"><i class="fa fa-list"></i></a><a href="#" title="Добавить проект" class="add-project"><i class="fa fa-plus"></i></a><a href="#" title="Удалить проект" class="remove-project"><i class="fa fa-minus"></i></a>
+          <select @change="select" v-model="selected" v-show="opened" v-click-outside="onOutside" class="select-project">
+            <option v-for="project in projectTitles" v-bind:value="project">{{ project }}</option>
+          </select><a href="#" title="Сменить проект" @click.prevent.stop="toggle" v-if="projectTitles.length &gt; 1" class="swap-project"><i class="fa fa-list"></i></a><a href="#" title="Добавить проект" @click.prevent="add" class="add-project"><i class="fa fa-plus"></i></a><a href="#" title="Удалить проект" @click.prevent="remove" class="remove-project"><i class="fa fa-minus"></i></a>
         </div>
-        <h1>Time Tracker<span class="project-name"></span></h1>
+        <h1>Time Tracker<span class="project-name">— {{ current }}</span></h1>
       </div>
     </template>
     <template id="timer-tmpl">
-      <div class="timer-container"><a href="#" title="Таймер" class="btn"><i class="fa fa-play"></i></a><a href="#" title="Таймер" class="label">0:00:00</a>
-        <div class="total-time">Всего времени в проекте: <span class="total value">0:00:00</span><br>не учтенного: <span class="opened value">0:00:00</span></div>
+      <div class="timer-container"><a href="#" title="Таймер" @click="toggle" class="btn"><i v-bind:class="{'fa-pause': running, 'fa-play': !running}" class="fa"></i></a><a href="#" title="Таймер" @click="toggle" class="label">{{ time|millis }}</a>
+        <div class="total-time">Всего времени в проекте:<span class="total value">{{ total|millis }}</span><br>не учтенного:<span class="opened value">{{ opened|millis }}</span></div>
       </div>
     </template>
     <template id="times-tmpl">
       <div class="times">
-        <div class="empty">Пока нет учтенного времени</div>
-        <table class="results">
+        <div v-if="!exist" class="empty">Пока нет учтенного времени</div>
+        <table v-if="exist" class="results">
           <thead>
             <tr>
               <th>Учтено</th>
@@ -53,23 +55,26 @@
               <th></th>
             </tr>
           </thead>
-          <tbody></tbody>
+          <tbody>
+            <tr is="time-view" v-for="time in times" v-bind:key="time.startTs" v-bind:time="time" v-bind:start-date="startDate" @time:close="close" @time:remove="remove"></tr>
+          </tbody>
         </table>
       </div>
     </template>
     <template id="time-tmpl">
       <tr>
         <td>
-          <input type="checkbox" class="closer">
+          <input type="checkbox" @change="close" v-model="closed" v-bind:disabled="startDate" class="closer">
         </td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><a href="#" title="Удалить" class="clear-btn"><i class="fa fa-remove"></i></a></td>
+        <td v-bind:class="{closed: time.closed}">{{ time.startTs|loctime }}</td>
+        <td v-bind:class="{closed: time.closed}">{{ time.endTs|loctime }}</td>
+        <td v-bind:class="{closed: time.closed}" class="m-hidden">{{ time.desc }}</td>
+        <td v-bind:class="{closed: time.closed}">{{ diff|millis }}</td>
+        <td><a href="#" title="Удалить" @click.prevent="remove" class="clear-btn"><i class="fa fa-remove"></i></a></td>
       </tr>
     </template>
     <!-- build:js-->
+    <script src="/js/underscore.js"></script>
     <script src="/js/vue.js"></script>
     <script src="/js/main.js"></script>
     <!-- endbuild-->
